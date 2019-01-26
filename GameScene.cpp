@@ -115,11 +115,32 @@ void GameScene::update(float dt)
 		player->setScale(2);
 		player->setDir(true);
 	}
+	if (invuln >= 0) {
+		invuln -= dt;
+	}
+	else if (invuln <= 0) {
+		if ((player->getPosition().x - zombie[0]->getPosition().x) <= 0) {
+			if ((player->getPosition().x - zombie[0]->getPosition().x) >= -25) {
+				p_spd.x = Player::PLAYER_SPEED * -0.5f;
+				player->hurt(1);
+				player->move(p_spd);
+				invuln = _TIME;
+			}
+		}
+		else if ((player->getPosition().x - zombie[0]->getPosition().x) >= 0) {
+			if ((player->getPosition().x - zombie[0]->getPosition().x) >= 25) {
+				p_spd.x = Player::PLAYER_SPEED * 0.5f;
+				player->hurt(1);
+				player->move(p_spd);
+				invuln = _TIME;
+			}
+		}
+	}
 
 	if (timer >= 0) {
 		timer -= dt;
 	}
-	if (timer <= 0) {
+	else if (timer <= 0) {
 		if (GAMEPLAY_INPUT.key_space) {
 			if (player->getDir()) {
 				if ((player->getPosition().x - zombie[0]->getPosition().x) <= 50) {

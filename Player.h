@@ -4,6 +4,7 @@
 class Player : public cocos2d::Sprite {
 private:
 	bool face_right = true;
+	int hp = 10;
 public:
 	static const int PLAYER_SPEED = 60;
 
@@ -11,5 +12,7 @@ public:
 	void move(cocos2d::Vec2 spd);
 	bool getDir();
 	void setDir(bool dir);
+	void hurt(int dmg);
+
 };
 

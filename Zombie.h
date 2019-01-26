@@ -22,5 +22,6 @@ public:
 	cocos2d::Vec2 getSpd();
 	void setSpd(cocos2d::Vec2 spd);
 	void hurt(int dmg);
+	void hit(int dmg);
 	void move();
 };

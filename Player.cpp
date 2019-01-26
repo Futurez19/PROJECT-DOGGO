@@ -23,3 +23,7 @@ bool Player::getDir() {
 void Player::setDir(bool dir) {
 	face_right = dir;
 }
+
+void Player::hurt(int dmg) {
+	hp--;
+}
