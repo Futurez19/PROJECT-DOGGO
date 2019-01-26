@@ -28,9 +28,6 @@ bool GameScene::init()
 
 	auto KeyHandler = EventListenerKeyboard::create();
 
-	room1 = Room::create();
-	room1->setPosition(Vec2(150,100));
-
 	player = Player::create();
 	player->setPosition(Vec2(50, 100));
 	player->setScale(2.0f);

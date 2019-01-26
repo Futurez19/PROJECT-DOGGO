@@ -10,7 +10,7 @@ ContainerType Container::generateEnum()
 {
 	ContainerType temp_type;
 
-	srand(time(NULL));
+	srand(time(NULL)); // seeding random
 	int type = (rand() % 99) + 1; // 0-2 + 1	 aka 1-3
 
 	if (type <= 40) {

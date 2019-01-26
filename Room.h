@@ -6,7 +6,8 @@
 class Room : public cocos2d::Sprite
 {
 public:
-	static Room * create();
+	
+
 	
 private:
 	

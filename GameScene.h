@@ -9,7 +9,7 @@
 class GameScene : public cocos2d::Scene {
 private:
 	Player * player;
-	Room * room1;
+	
 	Container container = (cocos2d::Vec2(150, 100));
 	
 public:
