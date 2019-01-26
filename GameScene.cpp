@@ -32,6 +32,10 @@ bool GameScene::init()
 	zombie[0]->setPosition(Vec2(300, 100));
 	zombie[0]->setScale(2.0f);
 
+	zombie.push_back(Zombie::create(300, 1));
+	zombie[1]->setPosition(Vec2(320, 100));
+	zombie[1]->setScale(2.0f);
+
 	auto BG = Sprite::create();
 	BG->initWithFile("ground.png");
 	BG->setPosition(Vec2(550, -30));
@@ -94,6 +98,7 @@ bool GameScene::init()
 	addChild(player);
 	addChild(BG);
 	addChild(zombie[0]);
+	addChild(zombie[1]);
 
 	this->scheduleUpdate();
 
