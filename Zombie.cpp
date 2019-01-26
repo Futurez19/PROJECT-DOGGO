@@ -92,6 +92,10 @@ void Zombie::hurt(int dmg) {
 	hp -= dmg;
 }
 
+int Zombie::getHp() {
+	return hp;
+}
+
 void Zombie::hit(int dmg) {
 
 }

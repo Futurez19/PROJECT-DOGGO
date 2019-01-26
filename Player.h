@@ -3,7 +3,7 @@
 
 class Player : public cocos2d::Sprite {
 private:
-	bool face_right = true;
+	bool face_right = false;
 	int hp = 10;
 public:
 	static const int PLAYER_SPEED = 60;

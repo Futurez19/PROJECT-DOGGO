@@ -119,20 +119,22 @@ void GameScene::update(float dt)
 		invuln -= dt;
 	}
 	else if (invuln <= 0) {
-		if ((player->getPosition().x - zombie[0]->getPosition().x) <= 0) {
-			if ((player->getPosition().x - zombie[0]->getPosition().x) >= -25) {
-				p_spd.x = Player::PLAYER_SPEED * -0.5f;
-				player->hurt(1);
-				player->move(p_spd);
-				invuln = _TIME;
+		for (unsigned int z = 0; z < zombie.size(); z++) {
+			if ((player->getPosition().x - zombie[z]->getPosition().x) <= 0) {
+				if ((player->getPosition().x - zombie[z]->getPosition().x) >= -25) {
+					p_spd.x = Player::PLAYER_SPEED * -0.2f;
+					player->hurt(1);
+					player->move(p_spd);
+					invuln = _TIME;
+				}
 			}
-		}
-		else if ((player->getPosition().x - zombie[0]->getPosition().x) >= 0) {
-			if ((player->getPosition().x - zombie[0]->getPosition().x) >= 25) {
-				p_spd.x = Player::PLAYER_SPEED * 0.5f;
-				player->hurt(1);
-				player->move(p_spd);
-				invuln = _TIME;
+			else if ((player->getPosition().x - zombie[z]->getPosition().x) >= 0) {
+				if ((player->getPosition().x - zombie[z]->getPosition().x) >= 25) {
+					p_spd.x = Player::PLAYER_SPEED * 0.2f;
+					player->hurt(1);
+					player->move(p_spd);
+					invuln = _TIME;
+				}
 			}
 		}
 	}
@@ -142,23 +144,41 @@ void GameScene::update(float dt)
 	}
 	else if (timer <= 0) {
 		if (GAMEPLAY_INPUT.key_space) {
-			if (player->getDir()) {
-				if ((player->getPosition().x - zombie[0]->getPosition().x) <= 50) {
-					if ((player->getPosition().x - zombie[0]->getPosition().x) >= 0) {
-						zombie[0]->setSpd(Vec2(-1.0f, 0));
-						zombie[0]->hurt(1);
-						zombie[0]->move();
-						timer = _TIME;
+			for (unsigned int z = 0; z < zombie.size(); z++) {
+				if (player->getDir()) {
+					if ((player->getPosition().x - zombie[z]->getPosition().x) <= 50) {
+						if ((player->getPosition().x - zombie[z]->getPosition().x) >= 0) {
+							zombie[z]->setSpd(Vec2(-1.0f, 0));
+							if (!zombie[z]->getDir()) {
+								zombie[z]->hurt(5);
+							}
+							else {
+								zombie[z]->hurt(1);
+							}
+							zombie[z]->move();
+							timer = _TIME;
+						}
 					}
 				}
-			}
-			else if (!player->getDir()) {
-				if ((player->getPosition().x - zombie[0]->getPosition().x) >= -50) {
-					if ((player->getPosition().x - zombie[0]->getPosition().x) <= 0) {
-						zombie[0]->setSpd(Vec2(1.0f, 0));
-						zombie[0]->hurt(1);
-						zombie[0]->move();
-						timer = _TIME;
+				else if (!player->getDir()) {
+					if ((player->getPosition().x - zombie[z]->getPosition().x) >= -50) {
+						if ((player->getPosition().x - zombie[z]->getPosition().x) <= 0) {
+							zombie[z]->setSpd(Vec2(1.0f, 0));
+							if (zombie[z]->getDir()) {
+								zombie[z]->hurt(5);
+							}
+							else {
+								zombie[z]->hurt(1);
+							}
+							zombie[z]->move();
+							timer = _TIME;
+							if (zombie[z]->getHp() <= 0) {
+								removeChild(zombie[z]);
+								zombie[z]->release();
+								auto it = zombie.begin();
+								zombie.erase(it + z);
+							}
+						}
 					}
 				}
 			}
@@ -167,8 +187,8 @@ void GameScene::update(float dt)
 
 	player->move(p_spd);
 
-	zombie[0]->AI(player, dt);
-
-	//input AI in loop
-	zombie[0]->move();
+	for (unsigned int z = 0; z < zombie.size(); z++) {
+		zombie[z]->AI(player, dt);
+		zombie[z]->move();
+	}
 }
