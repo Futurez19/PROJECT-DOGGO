@@ -1,6 +1,9 @@
 #include "GameScene.h"
 #include "cocos2d.h"
 
+
+
+
 USING_NS_CC;
 
 struct {
@@ -10,6 +13,7 @@ struct {
 	bool key_left = false;
 	bool key_space = false;
 	bool key_space_p = false;
+	bool key_loot = false;
 } GAMEPLAY_INPUT;
 
 Scene* GameScene::createScene() {
@@ -23,6 +27,9 @@ bool GameScene::init()
 	}
 
 	auto KeyHandler = EventListenerKeyboard::create();
+
+	room1 = Room::create();
+	room1->setPosition(Vec2(150,100));
 
 	player = Player::create();
 	player->setPosition(Vec2(50, 100));
@@ -52,6 +59,9 @@ bool GameScene::init()
 		case EventKeyboard::KeyCode::KEY_SPACE:
 			GAMEPLAY_INPUT.key_space = true;
 			break;
+		case EventKeyboard::KeyCode::KEY_E:
+			GAMEPLAY_INPUT.key_loot = true;
+			break;
 		}
 	};
 
@@ -77,6 +87,9 @@ bool GameScene::init()
 			GAMEPLAY_INPUT.key_space = false;
 			GAMEPLAY_INPUT.key_space_p = false;
 			break;
+		case EventKeyboard::KeyCode::KEY_E:
+			GAMEPLAY_INPUT.key_loot = false;
+			break;
 		}
 	};
 
@@ -84,6 +97,7 @@ bool GameScene::init()
 
 
 	addChild(player);
+	
 
 	this->scheduleUpdate();
 
@@ -92,6 +106,8 @@ bool GameScene::init()
 
 void GameScene::update(float dt)
 {
+	
+
 	Vec2 p_spd = { 0, 0 };
 
 	if (GAMEPLAY_INPUT.key_right) {
@@ -101,6 +117,14 @@ void GameScene::update(float dt)
 	if (GAMEPLAY_INPUT.key_left) {
 		p_spd.x -= Player::PLAYER_SPEED * dt;
 	}
+
+	
+	if (GAMEPLAY_INPUT.key_loot && (player->getPositionX() - container.getPosX() <= 10) && container.getLooted() == false) {
+		container.isBeingLooted(true);
+		container.looting(player, dt);
+	}
+	else
+		container.isBeingLooted(false);
 
 
 	player->move(p_spd);

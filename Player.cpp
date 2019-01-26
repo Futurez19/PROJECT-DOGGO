@@ -15,3 +15,18 @@ void Player::move(cocos2d::Vec2 spd)
 {
 	setPosition(getPosition() + spd);
 }
+
+void Player::addfood(int i)
+{
+	food += i;
+}
+
+void Player::addWater(int i)
+{
+	water += i;
+}
+
+void Player::addGas(int i)
+{
+	gas += i;
+}
