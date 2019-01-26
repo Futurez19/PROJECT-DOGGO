@@ -28,9 +28,9 @@ bool GameScene::init()
 	player->setPosition(Vec2(50, 100));
 	player->setScale(2.0f);
 
-	zombie = Zombie::create(300,1);
-	zombie->setPosition(Vec2(300, 100));
-	zombie->setScale(2.0f);
+	zombie.push_back(Zombie::create(300,1));
+	zombie[0]->setPosition(Vec2(300, 100));
+	zombie[0]->setScale(2.0f);
 
 	auto BG = Sprite::create();
 	BG->initWithFile("ground.png");
@@ -93,7 +93,7 @@ bool GameScene::init()
 
 	addChild(player);
 	addChild(BG);
-	addChild(zombie);
+	addChild(zombie[0]);
 
 	this->scheduleUpdate();
 
@@ -122,19 +122,21 @@ void GameScene::update(float dt)
 	if (timer <= 0) {
 		if (GAMEPLAY_INPUT.key_space) {
 			if (player->getDir()) {
-				if ((player->getPosition().x - zombie->getPosition().x) <= 50) {
-					if ((player->getPosition().x - zombie->getPosition().x) >= 0) {
-						zombie->setSpd(Vec2(-1.0f, 0));
-						zombie->move();
+				if ((player->getPosition().x - zombie[0]->getPosition().x) <= 50) {
+					if ((player->getPosition().x - zombie[0]->getPosition().x) >= 0) {
+						zombie[0]->setSpd(Vec2(-1.0f, 0));
+						zombie[0]->hurt(1);
+						zombie[0]->move();
 						timer = _TIME;
 					}
 				}
 			}
 			else if (!player->getDir()) {
-				if ((player->getPosition().x - zombie->getPosition().x) >= -50) {
-					if ((player->getPosition().x - zombie->getPosition().x) <= 0) {
-						zombie->setSpd(Vec2(1.0f, 0));
-						zombie->move();
+				if ((player->getPosition().x - zombie[0]->getPosition().x) >= -50) {
+					if ((player->getPosition().x - zombie[0]->getPosition().x) <= 0) {
+						zombie[0]->setSpd(Vec2(1.0f, 0));
+						zombie[0]->hurt(1);
+						zombie[0]->move();
 						timer = _TIME;
 					}
 				}
@@ -144,8 +146,8 @@ void GameScene::update(float dt)
 
 	player->move(p_spd);
 
-	zombie->AI(player, dt);
+	zombie[0]->AI(player, dt);
 
 	//input AI in loop
-	zombie->move();
+	zombie[0]->move();
 }

@@ -2,12 +2,11 @@
 #include "2d/CCScene.h"
 #include "Player.h"
 #include "Zombie.h"
-#include "Attack.h"
+
 class GameScene : public cocos2d::Scene {
 private:
 	Player * player;
-	Zombie * zombie;
-	Attack * strike;
+	std::vector<Zombie *> zombie;
 	const float _TIME = 1;
 	float timer = _TIME;
 public:
