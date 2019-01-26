@@ -35,3 +35,11 @@ void Player::move(cocos2d::Vec2 spd)
 {
 	setPosition(getPosition() + spd);
 }
+
+bool Player::getDir() {
+	return face_right;
+}
+
+void Player::setDir(bool dir) {
+	face_right = dir;
+}
