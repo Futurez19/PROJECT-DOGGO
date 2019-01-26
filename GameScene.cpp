@@ -27,6 +27,14 @@ bool GameScene::init()
 	player = Player::create();
 	player->setPosition(Vec2(50, 100));
 	player->setScale(2.0f);
+
+	zombie = Zombie::create(300,1);
+	zombie->setPosition(Vec2(300, 100));
+	zombie->setScale(2.0f);
+
+	auto BG = Sprite::create();
+	BG->initWithFile("ground.png");
+	BG->setPosition(Vec2(550, -30));
 	/*
 	*	Key Down Event Handler
 	*
@@ -84,6 +92,8 @@ bool GameScene::init()
 
 
 	addChild(player);
+	addChild(BG);
+	addChild(zombie);
 
 	this->scheduleUpdate();
 
@@ -96,12 +106,18 @@ void GameScene::update(float dt)
 
 	if (GAMEPLAY_INPUT.key_right) {
 		p_spd.x += Player::PLAYER_SPEED * dt;
+		player->setScale(-2, 2);
 	}
 
 	if (GAMEPLAY_INPUT.key_left) {
 		p_spd.x -= Player::PLAYER_SPEED * dt;
+		player->setScale(2);
 	}
 
-
 	player->move(p_spd);
+
+	zombie->AI(player, dt);
+
+	//input AI in loop
+	zombie->move();
 }
