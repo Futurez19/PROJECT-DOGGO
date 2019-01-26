@@ -9,4 +9,7 @@ public:
 
 	static Player * create();
 	void move(cocos2d::Vec2 spd);
+	bool getDir();
+	void setDir(bool dir);
 };
+

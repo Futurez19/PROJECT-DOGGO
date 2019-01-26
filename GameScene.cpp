@@ -107,11 +107,39 @@ void GameScene::update(float dt)
 	if (GAMEPLAY_INPUT.key_right) {
 		p_spd.x += Player::PLAYER_SPEED * dt;
 		player->setScale(-2, 2);
+		player->setDir(false);
 	}
 
 	if (GAMEPLAY_INPUT.key_left) {
 		p_spd.x -= Player::PLAYER_SPEED * dt;
 		player->setScale(2);
+		player->setDir(true);
+	}
+
+	if (timer >= 0) {
+		timer -= dt;
+	}
+	if (timer <= 0) {
+		if (GAMEPLAY_INPUT.key_space) {
+			if (player->getDir()) {
+				if ((player->getPosition().x - zombie->getPosition().x) <= 50) {
+					if ((player->getPosition().x - zombie->getPosition().x) >= 0) {
+						zombie->setSpd(Vec2(-1.0f, 0));
+						zombie->move();
+						timer = _TIME;
+					}
+				}
+			}
+			else if (!player->getDir()) {
+				if ((player->getPosition().x - zombie->getPosition().x) >= -50) {
+					if ((player->getPosition().x - zombie->getPosition().x) <= 0) {
+						zombie->setSpd(Vec2(1.0f, 0));
+						zombie->move();
+						timer = _TIME;
+					}
+				}
+			}
+		}
 	}
 
 	player->move(p_spd);
