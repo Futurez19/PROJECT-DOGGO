@@ -109,37 +109,40 @@ void GameScene::update(float dt)
 {
 	Vec2 p_spd = { 0, 0 };
 
-	if (GAMEPLAY_INPUT.key_right) {
-		p_spd.x += Player::PLAYER_SPEED * dt;
-		player->setScale(-2, 2);
-		player->setDir(false);
+	if (timer <= 0) {
+		if (GAMEPLAY_INPUT.key_right) {
+			p_spd.x += Player::PLAYER_SPEED * dt;
+			player->setScale(-2, 2);
+			player->setDir(false);
+		}
+
+		if (GAMEPLAY_INPUT.key_left) {
+			p_spd.x -= Player::PLAYER_SPEED * dt;
+			player->setScale(2);
+			player->setDir(true);
+		}
 	}
 
-	if (GAMEPLAY_INPUT.key_left) {
-		p_spd.x -= Player::PLAYER_SPEED * dt;
-		player->setScale(2);
-		player->setDir(true);
-	}
 	if (invuln >= 0) {
 		invuln -= dt;
 	}
 	else if (invuln <= 0) {
-		for (unsigned int z = 0; z < zombie.size(); z++) {
-			if ((player->getPosition().x - zombie[z]->getPosition().x) <= 0) {
-				if ((player->getPosition().x - zombie[z]->getPosition().x) >= -25) {
-					p_spd.x = Player::PLAYER_SPEED * -0.2f;
-					player->hurt(1);
-					player->move(p_spd);
-					invuln = _TIME;
+			for (unsigned int z = 0; z < zombie.size(); z++) {
+				if ((player->getPosition().x - zombie[z]->getPosition().x) <= 0) {
+					if ((player->getPosition().x - zombie[z]->getPosition().x) >= -25) {
+						p_spd.x = Player::PLAYER_SPEED * -0.2f;
+						player->hurt(1);
+						player->move(p_spd);
+						invuln = i_TIME;
+					}
 				}
-			}
-			else if ((player->getPosition().x - zombie[z]->getPosition().x) >= 0) {
-				if ((player->getPosition().x - zombie[z]->getPosition().x) >= 25) {
-					p_spd.x = Player::PLAYER_SPEED * 0.2f;
-					player->hurt(1);
-					player->move(p_spd);
-					invuln = _TIME;
-				}
+				else if ((player->getPosition().x - zombie[z]->getPosition().x) >= 0) {
+					if ((player->getPosition().x - zombie[z]->getPosition().x) >= 25) {
+						p_spd.x = Player::PLAYER_SPEED * 0.2f;
+						player->hurt(1);
+						player->move(p_spd);
+						invuln = i_TIME;
+					}
 			}
 		}
 	}
@@ -149,6 +152,7 @@ void GameScene::update(float dt)
 	}
 	else if (timer <= 0) {
 		if (GAMEPLAY_INPUT.key_space) {
+			timer = _TIME;
 			for (unsigned int z = 0; z < zombie.size(); z++) {
 				if (player->getDir()) {
 					if ((player->getPosition().x - zombie[z]->getPosition().x) <= 50) {
@@ -161,7 +165,6 @@ void GameScene::update(float dt)
 								zombie[z]->hurt(1);
 							}
 							zombie[z]->move();
-							timer = _TIME;
 						}
 					}
 				}

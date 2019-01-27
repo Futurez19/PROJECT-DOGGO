@@ -8,8 +8,9 @@ private:
 	Player * player;
 	std::vector<Zombie *> zombie;
 	const float _TIME = 1;
+	const float i_TIME = 0.5;
 	float timer = _TIME;
-	float invuln = _TIME;
+	float invuln = i_TIME;
 public:
 	static Scene* GameScene::createScene();
 	virtual bool init();
