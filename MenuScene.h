@@ -9,6 +9,8 @@ public:
 	virtual bool init();
 	void menuCloseCallback(cocos2d::Ref* pSender);
 
+	void menuPlayCallback(Ref * pSender);
+
 	void update(float dt) override;
 
 	CREATE_FUNC(MenuScene);

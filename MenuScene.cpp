@@ -1,5 +1,6 @@
 #include "MenuScene.h"
 #include "cocos2d.h"
+#include "GameScene.h"
 
 USING_NS_CC;
 
@@ -27,7 +28,7 @@ bool MenuScene::init()
 	auto playGame = MenuItemImage::create(
 		"PLAY_Unselect.PNG",
 		"PLAY_Select.PNG",
-		CC_CALLBACK_1(MenuScene::menuCloseCallback, this));
+		CC_CALLBACK_1(MenuScene::menuPlayCallback, this));
 
 	if (playGame == nullptr ||
 		playGame->getContentSize().width <= 0 ||
@@ -131,4 +132,8 @@ void MenuScene::menuCloseCallback(Ref* pSender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 	exit(0);
 #endif
+}
+
+void MenuScene::menuPlayCallback(Ref* pSender) {
+	Director::getInstance()->replaceScene(GameScene::create());
 }
