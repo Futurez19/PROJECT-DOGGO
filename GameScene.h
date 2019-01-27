@@ -11,9 +11,16 @@
 
 
 
+#include "Zombie.h"
+
 class GameScene : public cocos2d::Scene {
 private:
 	Player * player;
+	std::vector<Zombie *> zombie;
+	const float _TIME = 1;
+	float timer = _TIME;
+
+	const float SCALE = 3.0;
 
 	Room* rooms[3][2];
 
