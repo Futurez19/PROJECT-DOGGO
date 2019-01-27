@@ -114,6 +114,21 @@ void ResourceScene::update(float dt) {
 		healthBar[0]->setPosition(healthBar[0]->getPosition() + Vec2(0, (-20*test)));
 		//hpBar -= currentPos;
 	}
+
+	auto label = Label::createWithTTF("Gas", "fonts/Marker Felt.ttf", 50);
+	if (label == nullptr)
+	{
+		problemLoading("'fonts/Marker Felt.ttf'");
+	}
+	else
+	{
+		// position the label on the center of the screen
+		label->setPosition(Vec2(460,
+			480));
+
+		// add the label as a child to this layer
+		this->addChild(label, 1);
+	}
 	
 }
 
