@@ -81,26 +81,9 @@ bool MenuScene::init()
 		instructions->setPosition(Vec2(x, y));
 	}
 
-	auto highscores = MenuItemImage::create(
-		"Highscores_Unselect.PNG",
-		"Highscores_Select.PNG",
-		CC_CALLBACK_1(MenuScene::menuScoreCallback, this));
-
-	if (highscores == nullptr ||
-		highscores->getContentSize().width <= 0 ||
-		highscores->getContentSize().height <= 0)
-	{
-		problemLoading(" 'Highscores Unselected.png' and the other one");
-	}
-	else
-	{
-		float x = 65 + highscores->getContentSize().width / 2;//origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
-		float y = 178 - highscores->getContentSize().height / 2;//origin.y + closeItem->getContentSize().height / 2;
-		highscores->setPosition(Vec2(x, y));
-	}
 
 	// create menu, it's an autorelease object
-	auto menu = Menu::create(playGame, quitGame, instructions, highscores, NULL);
+	auto menu = Menu::create(playGame, quitGame, instructions, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 	addChild(BG);

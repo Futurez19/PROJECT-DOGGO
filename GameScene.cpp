@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "cocos2d.h"
 #include "Resources.h"
+#include "Highscores.h"
 
 USING_NS_CC;
 
@@ -112,10 +113,17 @@ bool GameScene::init()
 void GameScene::update(float dt)
 {
 	Vec2 p_spd = { 0, 0 };
+	
+		total -= dt;
+		if (total <= 0) {
+			total = t_TIME;
+			GameScene::clearBtns();
+			GameScene::gameResourceCallback(player);
+		}
+	
 
 	if (GAMEPLAY_INPUT.key_escape) {
-		GameScene::clearBtns();
-		GameScene::gameResourceCallback(player);
+		
 	}
 
 	if (timer <= 0) {
@@ -154,7 +162,11 @@ void GameScene::update(float dt)
 						player->move(p_spd);
 						invuln = i_TIME;
 					}
+					//HERE
 			}
+				if (player->getHp() <= 0) {
+					GameScene::gameHighscoreCallback(NULL);
+				}
 		}
 	}
 
@@ -214,6 +226,10 @@ void GameScene::update(float dt)
 
 void GameScene::gameResourceCallback(Ref* pSender) {
 	Director::getInstance()->replaceScene(ResourceScene::createScene(player));
+}
+
+void GameScene::gameHighscoreCallback(Ref* pSender) {
+	Director::getInstance()->replaceScene(ScoreScene::createScene());
 }
 
 void GameScene::clearBtns() {

@@ -21,9 +21,13 @@ bool ScoreScene::init()
 
 	auto KeyHandler = EventListenerKeyboard::create();
 
+	cocos2d::Texture2D::TexParams tp = { GL_NEAREST, GL_NEAREST, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE };
+
 	auto BG = Sprite::create();
-	BG->initWithFile("Highscores.png");
+	BG->initWithFile("Game Over.png");
 	BG->setPosition(Vec2(500, 300));
+	BG->setScale(10);
+	BG->getTexture()->setTexParameters(tp);
 
 	auto highscores = MenuItemImage::create(
 		"Exit_unclicked.PNG",
