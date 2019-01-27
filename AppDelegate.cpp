@@ -27,6 +27,8 @@
 #include "GameScene.h"
 #include "MenuScene.h"
 #include "Instructions.h"
+#include "Highscores.h"
+#include "Resources.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1

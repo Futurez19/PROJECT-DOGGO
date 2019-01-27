@@ -22,12 +22,12 @@ bool ScoreScene::init()
 	auto KeyHandler = EventListenerKeyboard::create();
 
 	auto BG = Sprite::create();
-	BG->initWithFile("Menu.png");
+	BG->initWithFile("Highscores.png");
 	BG->setPosition(Vec2(500, 300));
 
 	auto highscores = MenuItemImage::create(
-		"Highscores_Unselect.PNG",
-		"Highscores_Select.PNG",
+		"Exit_unclicked.PNG",
+		"Exit_clicked.PNG",
 		CC_CALLBACK_1(ScoreScene::scoreReturnCallback, this));
 
 	if (highscores == nullptr ||
@@ -38,8 +38,8 @@ bool ScoreScene::init()
 	}
 	else
 	{
-		float x = 65 + highscores->getContentSize().width / 2;//origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
-		float y = 178 - highscores->getContentSize().height / 2;//origin.y + closeItem->getContentSize().height / 2;
+		float x = 925 + highscores->getContentSize().width / 2;//origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
+		float y = 575 - highscores->getContentSize().height / 2;//origin.y + closeItem->getContentSize().height / 2;
 		highscores->setPosition(Vec2(x, y));
 	}
 
