@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "cocos2d.h"
+#include "Resources.h"
 
 USING_NS_CC;
 
@@ -10,7 +11,9 @@ struct {
 	bool key_left = false;
 	bool key_space = false;
 	bool key_space_p = false;
+	bool key_escape = false;
 } GAMEPLAY_INPUT;
+
 
 Scene* GameScene::createScene() {
 	return GameScene::create();
@@ -60,6 +63,9 @@ bool GameScene::init()
 		case EventKeyboard::KeyCode::KEY_SPACE:
 			GAMEPLAY_INPUT.key_space = true;
 			break;
+		case EventKeyboard::KeyCode::KEY_ESCAPE:
+			GAMEPLAY_INPUT.key_escape = true;
+			break;
 		}
 	};
 
@@ -85,6 +91,9 @@ bool GameScene::init()
 			GAMEPLAY_INPUT.key_space = false;
 			GAMEPLAY_INPUT.key_space_p = false;
 			break;
+		case EventKeyboard::KeyCode::KEY_ESCAPE:
+			GAMEPLAY_INPUT.key_escape = false;
+			break;
 		}
 	};
 
@@ -103,6 +112,11 @@ bool GameScene::init()
 void GameScene::update(float dt)
 {
 	Vec2 p_spd = { 0, 0 };
+
+	if (GAMEPLAY_INPUT.key_escape) {
+		GameScene::clearBtns();
+		GameScene::gameResourceCallback(player);
+	}
 
 	if (timer <= 0) {
 		if (invuln <= 0) {
@@ -196,4 +210,18 @@ void GameScene::update(float dt)
 		zombie[z]->AI(player, dt);
 		zombie[z]->move();
 	}
+}
+
+void GameScene::gameResourceCallback(Ref* pSender) {
+	Director::getInstance()->replaceScene(ResourceScene::createScene(player));
+}
+
+void GameScene::clearBtns() {
+	GAMEPLAY_INPUT.key_up = false;
+	GAMEPLAY_INPUT.key_right = false;
+	GAMEPLAY_INPUT.key_down = false;
+	GAMEPLAY_INPUT.key_left = false;
+	GAMEPLAY_INPUT.key_space = false;
+	GAMEPLAY_INPUT.key_space_p = false;
+	GAMEPLAY_INPUT.key_escape = false;
 }

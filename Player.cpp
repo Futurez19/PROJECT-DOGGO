@@ -27,3 +27,10 @@ void Player::setDir(bool dir) {
 void Player::hurt(int dmg) {
 	hp--;
 }
+
+int Player::getHp() {
+	return hp;
+}
+void Player::setHp(int _hp) {
+	hp = _hp;
+}

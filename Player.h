@@ -13,6 +13,8 @@ public:
 	bool getDir();
 	void setDir(bool dir);
 	void hurt(int dmg);
+	int getHp();
+	void setHp(int _hp);
 
 };
 
