@@ -4,6 +4,8 @@ Player * Player::create()
 {
 	auto ret = new (std::nothrow) Player;
 	if (ret && ret->initWithFile("player_anim/stand_1.png")) {
+		cocos2d::Texture2D::TexParams tp = { GL_NEAREST , GL_NEAREST, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE };
+
 		//still animation
 		cocos2d::Vector<cocos2d::SpriteFrame *> stillframes;
 
@@ -19,10 +21,16 @@ Player * Player::create()
 		walkframes.pushBack(cocos2d::SpriteFrame::create("player_anim/walk_5.png", cocos2d::Rect(0, 0, 15, 33)));
 		walkframes.pushBack(cocos2d::SpriteFrame::create("player_anim/walk_6.png", cocos2d::Rect(0, 0, 15, 33)));
 
-		ret->animations.pushBack(cocos2d::Animation::createWithSpriteFrames(stillframes));
+		for each (cocos2d::SpriteFrame* sprt in walkframes)
+		{
+			sprt->getTexture()->setTexParameters(tp);
+		}
+
+
+		ret->animations.pushBack(cocos2d::Animation::createWithSpriteFrames(stillframes, 0.5f));
 		ret->animations.pushBack(cocos2d::Animation::createWithSpriteFrames(walkframes, 0.1f));
 
-		ret->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(ret->animations.at(1))));
+		ret->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(ret->animations.at(0))));
 
 		ret->autorelease();
 		return ret;
@@ -34,6 +42,16 @@ Player * Player::create()
 void Player::move(cocos2d::Vec2 spd)
 {
 	setPosition(getPosition() + spd);
+}
+
+cocos2d::Animation * Player::getAnim(int id)
+{
+	if (id < 0 || id > animations.size()) {
+		return nullptr;
+	}
+	else {
+		return animations.at(id);
+	}
 }
 
 bool Player::getDir() {

@@ -3,7 +3,7 @@
 Zombie * Zombie::create(int x, int floor)
 {
 	auto ret = new (std::nothrow) Zombie;
-	if (ret && ret->initWithFile("player2.png")) {
+	if (ret && ret->initWithFile("player_anim/stand_1.png")) {
 		ret->autorelease();
 		return ret;
 	}
@@ -25,7 +25,7 @@ void Zombie::AI(Player* player, float dt) {
 		else if (!getDir()) {
 			if ((player->getPosition().x - this->getPosition().x) <= 30) {
 				z_spd.x = Zombie::ZOMBIE_SPEED * dt;
-				setScale(2);
+				setScale(SCALE);
 				atk = true;
 			}
 		}
@@ -40,7 +40,7 @@ void Zombie::AI(Player* player, float dt) {
 		else if (getDir()) {
 			if ((this->getPosition().x - player->getPosition().x) <= 30) {
 				z_spd.x = -Zombie::ZOMBIE_SPEED * dt;
-				setScale(-2, 2);
+				setScale(-SCALE, SCALE);
 				atk = true;
 			}
 		}
@@ -59,12 +59,12 @@ void Zombie::AI(Player* player, float dt) {
 			if (turn == 1) {
 				if (getDir()) {
 					setDir(false);
-					setScale(-2, 2);
+					setScale(-SCALE, SCALE);
 					timer = TURNT_TIME;
 				}
 				else if (!getDir()) {
 					setDir(true);
-					setScale(2);
+					setScale(SCALE);
 					timer = TURNT_TIME;
 				}
 			}

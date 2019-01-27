@@ -9,6 +9,8 @@ private:
 	std::vector<Zombie *> zombie;
 	const float _TIME = 1;
 	float timer = _TIME;
+
+	const float SCALE = 3.0;
 public:
 	static Scene* GameScene::createScene();
 	virtual bool init();

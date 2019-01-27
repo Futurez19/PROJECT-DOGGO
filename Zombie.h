@@ -10,6 +10,7 @@ private:
 	const float TURNT_TIME =3;
 	float timer = TURNT_TIME;
 	int hp = 5;
+	const float SCALE = 3.0;
 public:
 	//Zombie(int x, int floor);
 
