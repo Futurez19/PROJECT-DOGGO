@@ -117,25 +117,28 @@ void GameScene::update(float dt)
 {
 	Vec2 p_spd = { 0, 0 };
 
-	if (GAMEPLAY_INPUT.key_right) {
-		p_spd.x += Player::PLAYER_SPEED * dt;
+	if (timer <= 0) {
+		if (invuln <= 0) {
+			if (GAMEPLAY_INPUT.key_right) {
+				p_spd.x += Player::PLAYER_SPEED * dt;
+				player->setScale(-SCALE, SCALE);
+				player->setDir(false);
+				if (!player->isMoving()) {
+					player->setMoving(true);
+					player->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(player->getAnim(1))));
+				}
+			}
 
-		player->setScale(-SCALE, SCALE);
-		player->setDir(false);
-		if (!player->isMoving()) {
-			player->setMoving(true);
-			player->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(player->getAnim(1))));
-		}
-	}
+			if (GAMEPLAY_INPUT.key_left) {
+				p_spd.x -= Player::PLAYER_SPEED * dt;
+				player->setScale(SCALE);
+				player->setDir(true);
 
-	if (GAMEPLAY_INPUT.key_left) {
-		p_spd.x -= Player::PLAYER_SPEED * dt;
-
-		player->setScale(SCALE);
-		player->setDir(true);
-		if (!player->isMoving()) {
-			player->setMoving(true);
-			player->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(player->getAnim(1))));
+				if (!player->isMoving()) {
+					player->setMoving(true);
+					player->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(player->getAnim(1))));
+				}
+			}
 		}
 	}
 
@@ -145,40 +148,95 @@ void GameScene::update(float dt)
 		player->setMoving(false);
 	}
 
-	if (timer >= 0) {
-		timer -= dt;
+	if (invuln >= 0) {
+		invuln -= dt;
 	}
-	if (timer <= 0) {
+	else if (invuln <= 0) {
+			for (unsigned int z = 0; z < zombie.size(); z++) {
+				if ((player->getPosition().x - zombie[z]->getPosition().x) <= 0) {
+					if ((player->getPosition().x - zombie[z]->getPosition().x) >= -25) {
+						p_spd.x = Player::PLAYER_SPEED * -0.2f;
+						player->hurt(1);
+						player->move(p_spd);
+						invuln = i_TIME;
+					}
+				}
+				else if ((player->getPosition().x - zombie[z]->getPosition().x) >= 0) {
+					if ((player->getPosition().x - zombie[z]->getPosition().x) >= 25) {
+						p_spd.x = Player::PLAYER_SPEED * 0.2f;
+						player->hurt(1);
+						player->move(p_spd);
+						invuln = i_TIME;
+					}
+			}
+		}
+	}
+
+	if (timer > 0) {
+		timer -= dt;
+
+		if (timer < 0.2f) {
+			for (unsigned int z = 0; z < zombie.size(); z++) {
+				if (player->getDir()) {
+					if ((player->getPosition().x - zombie[z]->getPosition().x) <= 75) {
+						if ((player->getPosition().x - zombie[z]->getPosition().x) >= 0) {
+							zombie[z]->setSpd(Vec2(-2.0f, 0));
+							if (!zombie[z]->getDir()) {
+								zombie[z]->hurt(5);
+							}
+							else {
+								zombie[z]->hurt(1);
+							}
+							zombie[z]->move();
+						}
+					}
+				}
+				else if (!player->getDir()) {
+					if ((player->getPosition().x - zombie[z]->getPosition().x) >= -75) {
+						if ((player->getPosition().x - zombie[z]->getPosition().x) <= 0) {
+							zombie[z]->setSpd(Vec2(2.0f, 0));
+							if (zombie[z]->getDir()) {
+								zombie[z]->hurt(5);
+							}
+							else {
+								zombie[z]->hurt(1);
+							}
+							zombie[z]->move();
+							if (zombie[z]->getHp() <= 0) {
+								removeChild(zombie[z]);
+								zombie[z]->release();
+								auto it = zombie.begin();
+								zombie.erase(it + z);
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+		if (timer <= 0) {
+			player->stopAllActions();
+			player->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(player->getAnim(0))));
+			player->setAnchorPoint(cocos2d::Vec2(0.5, 0.5));
+		}
+	}
+	else if (timer <= 0) {
 		if (GAMEPLAY_INPUT.key_space) {
-			if (player->getDir()) {
-				if ((player->getPosition().x - zombie[0]->getPosition().x) <= 50) {
-					if ((player->getPosition().x - zombie[0]->getPosition().x) >= 0) {
-						zombie[0]->setSpd(Vec2(-1.0f, 0));
-						zombie[0]->hurt(1);
-						zombie[0]->move();
-						timer = _TIME;
-					}
-				}
-			}
-			else if (!player->getDir()) {
-				if ((player->getPosition().x - zombie[0]->getPosition().x) >= -50) {
-					if ((player->getPosition().x - zombie[0]->getPosition().x) <= 0) {
-						zombie[0]->setSpd(Vec2(1.0f, 0));
-						zombie[0]->hurt(1);
-						zombie[0]->move();
-						timer = _TIME;
-					}
-				}
-			}
+			timer = _TIME;
+			player->stopAllActions();
+			player->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(player->getAnim(2))));
+			player->setMoving(false);
 		}
 	}
 
 	if (player->getPosition().x + p_spd.x - player->getBoundingBox().size.width/2 < 70 * SCALE) {
 		p_spd.x = player->getPosition().x - player->getBoundingBox().size.width / 2 - (70 * SCALE);
 	}
-	else if (player->getPosition().x + p_spd.x + player->getBoundingBox().size.width/2 > 600 * SCALE - 265) {
-		p_spd.x = player->getPosition().x + player->getBoundingBox().size.width/2 - (600 * SCALE - 265);
+	else if (player->getPosition().x + p_spd.x + player->getBoundingBox().size.width/2 > (600 - 87) * SCALE) {
+		p_spd.x = player->getPosition().x + player->getBoundingBox().size.width/2 - ((600 - 87) * SCALE);
 	}
+
 
 	if (player->getPosition().x >= 158 * SCALE && player->getPosition().x + p_spd.x < 158 * SCALE) {
 		p_spd.y = -5 * SCALE;
@@ -199,11 +257,19 @@ void GameScene::update(float dt)
 		cam->setPositionX((600 * SCALE) - visibleSize.width - 100);
 	}
 
+	if (player->getFloor() == 1) {
+		cam->setPositionY(0.0f);
+	}
+	else {
+		cam->setPositionY(50 * SCALE);
+	}
+
 
 	player->move(p_spd);
 
-	zombie[0]->AI(player, dt);
+	for (unsigned int z = 0; z < zombie.size(); z++) {
+		zombie[z]->AI(player, dt);
 
-	//input AI in loop
-	zombie[0]->move();
+		zombie[z]->move();
+	}
 }

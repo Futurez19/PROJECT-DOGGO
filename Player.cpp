@@ -21,14 +21,41 @@ Player * Player::create()
 		walkframes.pushBack(cocos2d::SpriteFrame::create("player_anim/walk_5.png", cocos2d::Rect(0, 0, 15, 33)));
 		walkframes.pushBack(cocos2d::SpriteFrame::create("player_anim/walk_6.png", cocos2d::Rect(0, 0, 15, 33)));
 
+		cocos2d::Vector<cocos2d::SpriteFrame *> atkframes;
+		atkframes.pushBack(cocos2d::SpriteFrame::create("player_anim/atk_1.png", cocos2d::Rect(0, 0, 19, 39)));
+		atkframes.pushBack(cocos2d::SpriteFrame::create("player_anim/atk_2.png", cocos2d::Rect(0, 0, 18, 39)));
+		atkframes.pushBack(cocos2d::SpriteFrame::create("player_anim/atk_3.png", cocos2d::Rect(0, 0, 23, 39)));
+		atkframes.pushBack(cocos2d::SpriteFrame::create("player_anim/atk_4.png", cocos2d::Rect(0, 0, 21, 39)));
+
+		atkframes.at(0)->setAnchorPoint(cocos2d::Vec2(0.5, 0.4));
+		atkframes.at(2)->setAnchorPoint(cocos2d::Vec2(0.6, 0.4));
+		atkframes.at(3)->setAnchorPoint(cocos2d::Vec2(0.7, 0.4));
+
+		cocos2d::Vector<cocos2d::SpriteFrame *> srchframes;
+		//walkframes.pushBack(stillframes.at(0));
+		srchframes.pushBack(cocos2d::SpriteFrame::create("player_anim/srch_1.png", cocos2d::Rect(0, 0, 15, 33)));
+		srchframes.pushBack(cocos2d::SpriteFrame::create("player_anim/srch_2.png", cocos2d::Rect(0, 0, 15, 33)));
+		srchframes.pushBack(cocos2d::SpriteFrame::create("player_anim/srch_3.png", cocos2d::Rect(0, 0, 15, 33)));
+
 		for each (cocos2d::SpriteFrame* sprt in walkframes)
 		{
 			sprt->getTexture()->setTexParameters(tp);
 		}
 
+		for each (cocos2d::SpriteFrame* sprt in atkframes)
+		{
+			sprt->getTexture()->setTexParameters(tp);
+		}
+
+		for each (cocos2d::SpriteFrame* sprt in srchframes)
+		{
+			sprt->getTexture()->setTexParameters(tp);
+		}
 
 		ret->animations.pushBack(cocos2d::Animation::createWithSpriteFrames(stillframes, 0.5f));
 		ret->animations.pushBack(cocos2d::Animation::createWithSpriteFrames(walkframes, 0.1f));
+		ret->animations.pushBack(cocos2d::Animation::createWithSpriteFrames(atkframes, 0.2f));
+		ret->animations.pushBack(cocos2d::Animation::createWithSpriteFrames(srchframes, 0.2f));
 
 		ret->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(ret->animations.at(0))));
 
@@ -60,4 +87,8 @@ bool Player::getDir() {
 
 void Player::setDir(bool dir) {
 	face_right = dir;
+}
+
+void Player::hurt(int dmg) {
+	hp--;
 }

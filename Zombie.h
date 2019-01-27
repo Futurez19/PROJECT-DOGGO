@@ -10,18 +10,24 @@ private:
 	const float TURNT_TIME =3;
 	float timer = TURNT_TIME;
 	int hp = 5;
-	const float SCALE = 3.0;
+	const float SCALE = 4.0;
+	bool atk;
 public:
 	//Zombie(int x, int floor);
 
 	static const int ZOMBIE_SPEED = 10;
 
 	static Zombie * create(int x, int floor);
+
+	cocos2d::Vector<cocos2d::Animation *> animations;
+
 	void AI(Player* player, float dt);
 	bool getDir();
 	void setDir(bool dir);
 	cocos2d::Vec2 getSpd();
 	void setSpd(cocos2d::Vec2 spd);
 	void hurt(int dmg);
+	int getHp();
+	void hit(int dmg);
 	void move();
 };
