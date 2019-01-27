@@ -96,6 +96,11 @@ void Container::isBeingLooted(bool x)
 	beingLooted = x;
 }
 
+bool Container::getBeingLooted()
+{
+	return beingLooted;
+}
+
 float Container::getPosX() {
 	return position.x;
 }

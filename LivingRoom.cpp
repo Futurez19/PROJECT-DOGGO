@@ -7,8 +7,8 @@
 
 		switch (variation) {
 		case 1: //This is where we add the Sprite image and the locations of the containers
-
-			spriteFile = "3.png";
+			
+			spriteFile = "LivingRoomAsset.jpg";
 			break;
 		}
 
@@ -20,3 +20,12 @@
 		CC_SAFE_RELEASE(live);
 		return nullptr;
 	}
+
+	void LivingRoom::generateVariation(int v)
+	{
+		if (v == 1) {
+			Container* temp_container1 = new Container(this->getPosition());
+			totalContainers.push_back(temp_container1);
+		}
+	}
+

@@ -1,8 +1,9 @@
 #include "GameScene.h"
 #include "cocos2d.h"
+#include "SimpleAudioEngine.h"
 
-
-
+using namespace CocosDenshion;
+auto audio = SimpleAudioEngine::getInstance();
 
 USING_NS_CC;
 
@@ -13,7 +14,7 @@ struct {
 	bool key_left = false;
 	bool key_space = false;
 	bool key_space_p = false;
-	bool key_loot = false;
+	bool key_Interact = false;
 } GAMEPLAY_INPUT;
 
 Scene* GameScene::createScene() {
@@ -26,7 +27,26 @@ bool GameScene::init()
 		return false;
 	}
 
+	
+
+	audio->preloadEffect("Rummaging.wav");
+
 	auto KeyHandler = EventListenerKeyboard::create();
+
+	KitchenRoom1 = Kitchen::create(1);
+	KitchenRoom1->setPosition(400, 125);
+	KitchenRoom1->setScale(2.0f);
+	KitchenRoom1->generateVariation(1);
+
+	LivingRoom1 = LivingRoom::create(1);
+	LivingRoom1->setPosition(200,125);
+	LivingRoom1->setScale(2.0f);
+	LivingRoom1->generateVariation(1);
+
+	Bathroom1 = Bathroom::create(1);
+	Bathroom1->setPosition(600, 125);
+	Bathroom1->setScale(2.0f);
+	Bathroom1->generateVariation(1);
 
 	player = Player::create();
 	player->setPosition(Vec2(50, 100));
@@ -57,10 +77,10 @@ bool GameScene::init()
 			GAMEPLAY_INPUT.key_space = true;
 			break;
 		case EventKeyboard::KeyCode::KEY_E:
-			GAMEPLAY_INPUT.key_loot = true;
+			GAMEPLAY_INPUT.key_Interact = true;
 			break;
 		}
-	};
+	};								 
 
 	KeyHandler->onKeyReleased = [](EventKeyboard::KeyCode key, Event * event) {
 		switch (key) {
@@ -85,7 +105,8 @@ bool GameScene::init()
 			GAMEPLAY_INPUT.key_space_p = false;
 			break;
 		case EventKeyboard::KeyCode::KEY_E:
-			GAMEPLAY_INPUT.key_loot = false;
+			GAMEPLAY_INPUT.key_Interact = false;
+			audio->stopEffect(audio->playEffect("Rummaging.wav", false, 1.0f, 1.0f, 1.0f));
 			break;
 		}
 	};
@@ -93,8 +114,12 @@ bool GameScene::init()
 	this->_eventDispatcher->addEventListenerWithSceneGraphPriority(KeyHandler, player);
 
 
-	addChild(player);
 	
+
+	addChild(LivingRoom1);
+	addChild(KitchenRoom1);
+	addChild(Bathroom1);
+	addChild(player);
 
 	this->scheduleUpdate();
 
@@ -116,12 +141,15 @@ void GameScene::update(float dt)
 	}
 
 	
-	if (GAMEPLAY_INPUT.key_loot && (player->getPositionX() - container.getPosX() <= 10) && container.getLooted() == false) {
-		container.isBeingLooted(true);
-		container.looting(player, dt);
+	if (GAMEPLAY_INPUT.key_Interact && (LivingRoom1->totalContainers[0]->getPosX() - player->getPositionX() >= 0 && LivingRoom1->totalContainers[0]->getPosX() - player->getPositionX() >= 10) && LivingRoom1->totalContainers[0]->getLooted() == false) {
+		if(!(LivingRoom1->totalContainers[0]->getBeingLooted())){ audio->playEffect("Rummaging.wav", false, 1.0f, 1.0f, 1.0f); }
+		LivingRoom1->totalContainers[0]->isBeingLooted(true);
+		LivingRoom1->totalContainers[0]->looting(player, dt);
+		
 	}
-	else
-		container.isBeingLooted(false);
+	else {
+		LivingRoom1->totalContainers[0]->isBeingLooted(false);
+	}
 
 
 	player->move(p_spd);

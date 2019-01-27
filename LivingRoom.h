@@ -1,10 +1,15 @@
 #pragma once
+#include"Container.h"
+#include"cocos2d.h"
 
-#include "Room.h"
-
-class LivingRoom : public Room {
+class LivingRoom : public cocos2d::Sprite{
 public:
-	LivingRoom * create(int);
-private:
+	static LivingRoom * create(int);
+	int variation;
+	std::vector<Container*> totalContainers;
 
+
+	void generateVariation(int);
+private:
+	
 };

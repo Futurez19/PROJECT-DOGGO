@@ -2,7 +2,10 @@
 #include "2d/CCScene.h"
 #include "Player.h"
 #include "Container.h"
-#include "Room.h"
+#include "Kitchen.h"
+#include "Bedroom.h"
+#include "Hallway.h"
+#include "LivingRoom.h"
 
 
 
@@ -10,7 +13,9 @@ class GameScene : public cocos2d::Scene {
 private:
 	Player * player;
 	
-	Container container = (cocos2d::Vec2(150, 100));
+	LivingRoom * LivingRoom1;
+	Kitchen * KitchenRoom1;
+	Bathroom * Bathroom1;
 	
 public:
 	static Scene* GameScene::createScene();

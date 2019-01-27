@@ -31,6 +31,7 @@ public:
 
 	void looting(Player* player, float);
 	void isBeingLooted(bool);
+	bool getBeingLooted();
 	
 	bool getLooted();
 	
