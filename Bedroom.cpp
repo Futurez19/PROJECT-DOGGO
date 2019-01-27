@@ -20,6 +20,11 @@ Bedroom * Bedroom::create(int variation)
 	return nullptr;
 }
 
+bool Bedroom::isStairs()
+{
+	return hasStairs;
+}
+
 void Bedroom::generateVariation(int v)
 {
 	if (v == 1) {

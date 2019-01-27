@@ -21,11 +21,19 @@
 		return nullptr;
 	}
 
+
+
+	bool LivingRoom::isStairs()
+	{
+		return hasStairs;
+	}
+
 	void LivingRoom::generateVariation(int v)
 	{
 		if (v == 1) {
 			Container* temp_container1 = new Container(this->getPosition());
 			totalContainers.push_back(temp_container1);
+			
 		}
 	}
 

@@ -9,6 +9,12 @@ Kitchen * Kitchen::create(int variation)
 		
 		spriteFile = "KitchenAsset.jpg";
 		break;
+	case 2: 
+		spriteFile = "KitchenAsset2.jpg";
+		break;
+	case 3:
+		spriteFile = "KitchenAsset3.jpg";
+		break;
 	}
 
 	auto kitch = new (std::nothrow) Kitchen;
@@ -20,10 +26,19 @@ Kitchen * Kitchen::create(int variation)
 	return nullptr;
 }
 
+bool Kitchen::isStairs()
+{
+	return hasStairs;
+}
+
 void Kitchen::generateVariation(int v)
 {
-	if (v == 1) {
-		Container* temp_container1 = new Container(cocos2d::Vec2(400,100));
+	switch(v){
+	case 1:
+		Container* temp_container1 = new Container(this->getPosition());
 		totalContainers.push_back(temp_container1);
+
+		break;
+
 	}
 }

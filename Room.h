@@ -1,22 +1,18 @@
 #pragma once
-#include"cocos2d.h"
-#include"Container.h"
-#include "Kitchen.h"
-#include "Bedroom.h"
-#include "Bathroom.h"
-#include "Hallway.h"
-#include "LivingRoom.h"
-#include <vector>
+#include "cocos2d.h"
+#include "Container.h"
+#include <ctime>
 
-class Room : public cocos2d::Sprite
-{
+class Room : public cocos2d::Sprite {
 public:
-	
+	std::vector<Container*> totalContainers;
 
-	 
+	int variation;
+
+	
+	virtual bool isStairs() = 0;
+	virtual void generateVariation(int) = 0;
 private:
 	
 	
-
 };
-
