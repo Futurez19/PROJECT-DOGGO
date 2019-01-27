@@ -13,7 +13,7 @@ private:
 	bool Looted = false;
 	bool beingLooted = false;
 
-	float lootingTime = 3.0f;
+	
 	cocos2d::Sprite * prompt = cocos2d::Sprite::create("E-Prompt.png");
 
 public:
@@ -29,13 +29,12 @@ public:
 	float getPosX();
 	float getPosY();
 
-	void looting(Player* player, float);
+	void looting(Player* player);
 	void isBeingLooted(bool);
 	bool getBeingLooted();
 	
 	bool getLooted();
 	
-	float getLootingTime();
 
 	cocos2d::Sprite* getPrompt() { return prompt; }
 };

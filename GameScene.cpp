@@ -285,9 +285,7 @@ void GameScene::update(float dt)
 	}
 
 	
-	for (int i = 0; i < 2; i++) {	 //Search Prompt
-		for (int q = 0; q < 1; q++) {
-			for (int w = 0; w < rooms[i][q]->totalContainers.size(); w++) {
+	
 	if (player->isMoving() && !GAMEPLAY_INPUT.key_left && !GAMEPLAY_INPUT.key_right) {
 		player->stopAllActions();
 		player->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(player->getAnim(0))));
@@ -348,7 +346,9 @@ void GameScene::update(float dt)
 		cam->setPositionX((600 * SCALE) - visibleSize.width - 100);
 	}
 
-
+	for (int i = 0; i < 2; i++) {	 //Search Prompt
+		for (int q = 0; q < 1; q++) {
+			for (int w = 0; w < rooms[i][q]->totalContainers.size(); w++) {
 				float dist = rooms[i][q]->totalContainers[w]->getPosX() - player->getPositionX();
 				if (dist >= 0 && dist <= 20) {
 					bool soundbuff = false;
@@ -356,14 +356,20 @@ void GameScene::update(float dt)
 
 					if (GAMEPLAY_INPUT.key_Interact && rooms[i][q]->totalContainers[w]->getLooted() == false) {	   //Looting
 						soundbuff = true;
+						lootingTime -= dt;
 
 						if (!(rooms[i][q]->totalContainers[w]->getBeingLooted())) {
 							audio->playEffect("SearchSound.wav", false, 1.0f, 1.0f, 0.008f);
-							rooms[i][q]->totalContainers[w]->isBeingLooted(true);
-							rooms[i][q]->totalContainers[w]->looting(player, dt);
+							
+							if (lootingTime <= 0) {
+								rooms[i][q]->totalContainers[w]->looting(player);
+								rooms[i][q]->totalContainers[w]->isBeingLooted(true);
+							}
+							
 						}
 						else {
 							rooms[i][q]->totalContainers[w]->isBeingLooted(false);
+							lootingTime = 3.0f;
 							//audio->stopEffect(audio->playEffect("Rummaging.wav", false, 1.0f, 1.0f, 0.01f));
 						}
 					}

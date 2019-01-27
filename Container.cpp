@@ -52,18 +52,12 @@ bool Container::getLooted()
 	return Looted;
 }
 
-float Container::getLootingTime()
-{
-	return lootingTime;
-}
 
-void Container::looting(Player * player, float dt)
+
+void Container::looting(Player * player)
 {
    //if looting time is completed
-	lootingTime -= dt;
-
-	if (lootingTime <= 0)
-	{
+	
 		switch (type) {
 		case FOOD:
 			player->addfood(contains);
@@ -77,13 +71,6 @@ void Container::looting(Player * player, float dt)
 		}
 
 		Looted = true;
-
-	}
-
-	if (!(Looted) && !(beingLooted)) {
-		lootingTime = 3.0f;
-	}
-
 }
 
 void Container::isBeingLooted(bool x)
@@ -110,7 +97,6 @@ Container::Container(cocos2d::Vec2 p) :position(p)
 {
 	type = generateEnum();
 	contains = generateNum();
-	Locked = generateLocked();
 }
 
 
