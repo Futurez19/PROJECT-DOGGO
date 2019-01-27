@@ -9,6 +9,10 @@ public:
 	virtual bool init();
 	void menuCloseCallback(cocos2d::Ref* pSender);
 
+	void menuInstructCallback(cocos2d::Ref* pSender);
+
+	void menuScoreCallback(cocos2d::Ref* pSender);
+
 	void menuPlayCallback(Ref * pSender);
 
 	void update(float dt) override;

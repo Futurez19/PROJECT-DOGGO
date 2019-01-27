@@ -1,6 +1,8 @@
 #include "MenuScene.h"
 #include "cocos2d.h"
 #include "GameScene.h"
+#include "Instructions.h"
+#include "Highscores.h"
 
 USING_NS_CC;
 
@@ -64,7 +66,7 @@ bool MenuScene::init()
 	auto instructions = MenuItemImage::create(
 		"Instructions_Unselect.PNG",
 		"Instructions_Select.PNG",
-		CC_CALLBACK_1(MenuScene::menuCloseCallback, this));
+		CC_CALLBACK_1(MenuScene::menuInstructCallback, this));
 
 	if (instructions == nullptr ||
 		instructions->getContentSize().width <= 0 ||
@@ -82,7 +84,7 @@ bool MenuScene::init()
 	auto highscores = MenuItemImage::create(
 		"Highscores_Unselect.PNG",
 		"Highscores_Select.PNG",
-		CC_CALLBACK_1(MenuScene::menuCloseCallback, this));
+		CC_CALLBACK_1(MenuScene::menuScoreCallback, this));
 
 	if (highscores == nullptr ||
 		highscores->getContentSize().width <= 0 ||
@@ -136,4 +138,12 @@ void MenuScene::menuCloseCallback(Ref* pSender)
 
 void MenuScene::menuPlayCallback(Ref* pSender) {
 	Director::getInstance()->replaceScene(GameScene::create());
+}
+
+void MenuScene::menuInstructCallback(Ref* pSender) {
+	Director::getInstance()->replaceScene(InstructScene::create());
+}
+
+void MenuScene::menuScoreCallback(Ref* pSender) {
+	Director::getInstance()->replaceScene(ScoreScene::create());
 }
