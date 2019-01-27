@@ -63,7 +63,7 @@ cocos2d::Vec2 GameScene::generateLocation(int i,int q) {
 void GameScene::RNG(int i, int q)
 {
 	std::random_device gen;
-	std::uniform_int_distribution<> range(1, 7);
+	std::uniform_int_distribution<> range(1, 5);
 	std::uniform_int_distribution<> range2(1, 3);
 
 	int roomType =(range(gen));
@@ -77,33 +77,31 @@ void GameScene::RNG(int i, int q)
 		
 		rooms[i][q] = Kitchen::create(var);
 		rooms[i][q]->setPosition(generateLocation(i,q));
-		rooms[i][q]->setScale(4.0f);
+		rooms[i][q]->setScale(SCALE);
 		rooms[i][q]->generateVariation(var);
 		break;
 
 	case 2:	//Living Room
 		rooms[i][q] = LivingRoom::create(var);
 		rooms[i][q]->setPosition(generateLocation(i, q));
-		rooms[i][q]->setScale(4.0f);
+		rooms[i][q]->setScale(SCALE);
 		rooms[i][q]->generateVariation(var);
 		break;
 
 	case 3:	//Bathroom
 		rooms[i][q] = Bathroom::create(var);
 		rooms[i][q]->setPosition(generateLocation(i, q));
-		rooms[i][q]->setScale(4.0f);
+		rooms[i][q]->setScale(SCALE);
 		rooms[i][q]->generateVariation(var);
 		break;
 		
 	case 4:	//Bedroom
 		rooms[i][q] = Bedroom::create(var);
 		rooms[i][q]->setPosition(generateLocation(i, q));
-		rooms[i][q]->setScale(4.0f);
+		rooms[i][q]->setScale(SCALE);
 		rooms[i][q]->generateVariation(var);
 		break;
-	case 5:
-	case 6:
-	case 7:	//Stairs
+	case 5:	//Stairs
 		//for (int w = 0; w < 3; w++) {
 			//for (int a = 0; a < 2; a++) {
 				if (q == 1) {	//Only one set of stairs	 !(rooms[w][a]->isStairs()) && 
@@ -118,7 +116,7 @@ void GameScene::RNG(int i, int q)
 				else {
 					rooms[i][q] = Stairway::create(var);
 					rooms[i][q]->setPosition(generateLocation(i,q));
-					rooms[i][q]->setScale(4.0f);
+					rooms[i][q]->setScale(SCALE);
 					rooms[i][q]->generateVariation(var);
 					break;
 					
@@ -253,6 +251,12 @@ bool GameScene::init()
 	this->_eventDispatcher->addEventListenerWithSceneGraphPriority(KeyHandler, player);
 
 
+	for (int i = 0; i < 3; i++) {
+		for (int q = 0; q < 2; q++) {
+			addChild(rooms[i][q]);
+		}
+	}
+
 	addChild(BG);
 	addChild(player);
 	addChild(zombie[0]);
@@ -267,6 +271,13 @@ bool GameScene::init()
 
 void GameScene::update(float dt)
 {
+
+	total -= dt;
+	if (total <= 0) {
+		total = T_TIME;
+		GameScene::clearBtns();
+		GameScene::gameResourceCallback(player);
+	}
 	Vec2 p_spd = { 0, 0 };
 
 	if (GAMEPLAY_INPUT.key_escape) {
@@ -297,17 +308,18 @@ void GameScene::update(float dt)
 			if (invuln <= 0) {
 				if (GAMEPLAY_INPUT.key_right) {
 					p_spd.x += Player::PLAYER_SPEED * dt;
-					player->setScale(-2, 2);
+					player->setScale(-SCALE, SCALE);
 					player->setDir(false);
 				}
 
 				if (GAMEPLAY_INPUT.key_left) {
 					p_spd.x -= Player::PLAYER_SPEED * dt;
-					player->setScale(2);
+					player->setScale(SCALE);
 					player->setDir(true);
 				}
 			}
 		}
+	}
 
 
 
@@ -386,7 +398,7 @@ void GameScene::update(float dt)
 				}
 			}
 		}
-	}
+		
 
 		if (player->getPosition().x + p_spd.x - player->getBoundingBox().size.width / 2 < 70 * SCALE) {
 			p_spd.x = player->getPosition().x - player->getBoundingBox().size.width / 2 - (70 * SCALE);
@@ -451,26 +463,26 @@ void GameScene::update(float dt)
 			}
 		}
 
-		for (int i = 0; i < 2; i++) {	 //Stairs Prompt
-			for (int q = 0; q < 1; q++) {
-				if ((rooms[i][q]->isStairs())) {
-					float dist = rooms[i][q]->getPositionX() - player->getPositionX();
-					if (dist >= 0 && dist <= 20) {
-						if (GAMEPLAY_INPUT.key_up && (player->getPositionY() < 250.0f) && player->getPositionY() < 400) {
-
-							player->move(cocos2d::Vec2(0, 200));
-						}
-
-						if (GAMEPLAY_INPUT.key_up && (player->getPositionY() > 250.0f) && player->getPositionY() > 0) {
-
-							player->move(cocos2d::Vec2(0, -200));
-						}
-
-
-					}
-				}
-			}
-		}
+		//for (int i = 0; i < 2; i++) {	 //Stairs Prompt
+		//	for (int q = 0; q < 1; q++) {
+		//		if ((rooms[i][q]->isStairs())) {
+		//			float dist = rooms[i][q]->getPositionX() - player->getPositionX();
+		//			if (dist >= 0 && dist <= 20) {
+		//				if (GAMEPLAY_INPUT.key_up && (player->getPositionY() < 250.0f) && player->getPositionY() < 400) {
+		//
+		//					player->move(cocos2d::Vec2(0, 200));
+		//				}
+		//
+		//				if (GAMEPLAY_INPUT.key_up && (player->getPositionY() > 250.0f) && player->getPositionY() > 0) {
+		//
+		//					player->move(cocos2d::Vec2(0, -200));
+		//				}
+		//
+		//
+		//			}
+		//		}
+		//	}
+		//}
 		//if (GAMEPLAY_INPUT.key_Interact && (LivingRoom1->totalContainers[0]->getPosX() - player->getPositionX() >= 0 && LivingRoom1->totalContainers[0]->getPosX() - player->getPositionX() >= 10) && LivingRoom1->totalContainers[0]->getLooted() == false) {
 		//	if(!(LivingRoom1->totalContainers[0]->getBeingLooted())){ audio->playEffect("Rummaging.wav", false, 1.0f, 1.0f, 1.0f); }
 		//	LivingRoom1->totalContainers[0]->isBeingLooted(true);

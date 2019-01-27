@@ -19,6 +19,9 @@ private:
 	std::vector<Zombie *> zombie;
 	int hp = 10;
 	const float _TIME = 1;
+	const float T_TIME = 60;
+
+	float total = T_TIME;
 
 	float lootingTime = 3.0f;
 
@@ -26,7 +29,7 @@ private:
 
 	Room* rooms[3][2];
 
-	cocos2d::Vec2 position1 = cocos2d::Vec2(200, 185);
+	cocos2d::Vec2 position1 = cocos2d::Vec2(1200, 244);
 	cocos2d::Vec2 position2 = cocos2d::Vec2(510, 185);
 	cocos2d::Vec2 position3 = cocos2d::Vec2(810, 185);
 	cocos2d::Vec2 position4 = cocos2d::Vec2(210, 485);

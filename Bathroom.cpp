@@ -23,7 +23,7 @@ Bathroom * Bathroom::create(int variation)
 	if (bath && bath->initWithFile(spriteFile)) {
 		bath->autorelease();
 		return bath;
-	}
+	}							 
 	CC_SAFE_RELEASE(bath);
 	return nullptr;
 }
