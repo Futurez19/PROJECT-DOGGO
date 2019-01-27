@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "cocos2d.h"
+#include "Resources.h"
 #include "SimpleAudioEngine.h"
 #include<random>
 
@@ -18,8 +19,10 @@ struct {
 	bool key_left = false;
 	bool key_space = false;
 	bool key_space_p = false;
+	bool key_escape = false;
 	bool key_Interact = false;
 } GAMEPLAY_INPUT;
+
 
 Scene* GameScene::createScene() {
 	return GameScene::create();
@@ -210,6 +213,9 @@ bool GameScene::init()
 		case EventKeyboard::KeyCode::KEY_E:
 			GAMEPLAY_INPUT.key_Interact = true;
 			break;
+		case EventKeyboard::KeyCode::KEY_ESCAPE:
+			GAMEPLAY_INPUT.key_escape = true;
+			break;
 		}
 	};								 
 
@@ -235,6 +241,9 @@ bool GameScene::init()
 			GAMEPLAY_INPUT.key_space = false;
 			GAMEPLAY_INPUT.key_space_p = false;
 			break;
+		case EventKeyboard::KeyCode::KEY_ESCAPE:
+			GAMEPLAY_INPUT.key_escape = false;
+			break;
 		case EventKeyboard::KeyCode::KEY_E:
 			GAMEPLAY_INPUT.key_Interact = false;
 			break;
@@ -258,10 +267,12 @@ bool GameScene::init()
 
 void GameScene::update(float dt)
 {
-	
-
 	Vec2 p_spd = { 0, 0 };
 
+	if (GAMEPLAY_INPUT.key_escape) {
+		GameScene::clearBtns();
+		GameScene::gameResourceCallback(player);
+	}
 	if (GAMEPLAY_INPUT.key_right) {
 		p_spd.x += Player::PLAYER_SPEED * dt;
 
@@ -282,141 +293,213 @@ void GameScene::update(float dt)
 			player->setMoving(true);
 			player->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(player->getAnim(1))));
 		}
-	}
+		if (timer <= 0) {
+			if (invuln <= 0) {
+				if (GAMEPLAY_INPUT.key_right) {
+					p_spd.x += Player::PLAYER_SPEED * dt;
+					player->setScale(-2, 2);
+					player->setDir(false);
+				}
 
-	
-	
-	if (player->isMoving() && !GAMEPLAY_INPUT.key_left && !GAMEPLAY_INPUT.key_right) {
-		player->stopAllActions();
-		player->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(player->getAnim(0))));
-		player->setMoving(false);
-	}
-
-	if (timer >= 0) {
-		timer -= dt;
-	}
-	if (timer <= 0) {
-		if (GAMEPLAY_INPUT.key_space) {
-			if (player->getDir()) {
-				if ((player->getPosition().x - zombie[0]->getPosition().x) <= 50) {
-					if ((player->getPosition().x - zombie[0]->getPosition().x) >= 0) {
-						zombie[0]->setSpd(Vec2(-1.0f, 0));
-						zombie[0]->hurt(1);
-						zombie[0]->move();
-						timer = _TIME;
-					}
+				if (GAMEPLAY_INPUT.key_left) {
+					p_spd.x -= Player::PLAYER_SPEED * dt;
+					player->setScale(2);
+					player->setDir(true);
 				}
 			}
-			else if (!player->getDir()) {
-				if ((player->getPosition().x - zombie[0]->getPosition().x) >= -50) {
-					if ((player->getPosition().x - zombie[0]->getPosition().x) <= 0) {
-						zombie[0]->setSpd(Vec2(1.0f, 0));
-						zombie[0]->hurt(1);
-						zombie[0]->move();
-						timer = _TIME;
+		}
+
+
+
+		if (player->isMoving() && !GAMEPLAY_INPUT.key_left && !GAMEPLAY_INPUT.key_right) {
+			player->stopAllActions();
+			player->runAction(cocos2d::RepeatForever::create(cocos2d::Animate::create(player->getAnim(0))));
+			player->setMoving(false);
+		}
+
+		if (invuln >= 0) {
+			invuln -= dt;
+		}
+		else if (invuln <= 0) {
+			for (unsigned int z = 0; z < zombie.size(); z++) {
+				if ((player->getPosition().x - zombie[z]->getPosition().x) <= 0) {
+					if ((player->getPosition().x - zombie[z]->getPosition().x) >= -25) {
+						p_spd.x = Player::PLAYER_SPEED * -0.2f;
+						player->hurt(1);
+						player->move(p_spd);
+						invuln = i_TIME;
+					}
+				}
+				else if ((player->getPosition().x - zombie[z]->getPosition().x) >= 0) {
+					if ((player->getPosition().x - zombie[z]->getPosition().x) >= 25) {
+						p_spd.x = Player::PLAYER_SPEED * 0.2f;
+						player->hurt(1);
+						player->move(p_spd);
+						invuln = i_TIME;
 					}
 				}
 			}
 		}
-	}
 
-	if (player->getPosition().x + p_spd.x - player->getBoundingBox().size.width/2 < 70 * SCALE) {
-		p_spd.x = player->getPosition().x - player->getBoundingBox().size.width / 2 - (70 * SCALE);
-	}
-	else if (player->getPosition().x + p_spd.x + player->getBoundingBox().size.width/2 > 600 * SCALE - 265) {
-		p_spd.x = player->getPosition().x + player->getBoundingBox().size.width/2 - (600 * SCALE - 265);
-	}
-
-	if (player->getPosition().x >= 158 * SCALE && player->getPosition().x + p_spd.x < 158 * SCALE) {
-		p_spd.y = -5 * SCALE;
-	}else if(player->getPosition().x + p_spd.x > 158 * SCALE && player->getPosition().x <= 158 * SCALE) {
-		p_spd.y = 5 * SCALE;
-	}
-
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-
-	auto cam = getDefaultCamera();
-	if (player->getPosition().x > visibleSize.width / 2 && player->getPosition().x < (600 * SCALE) - (visibleSize.width/2) - 100) {
-		cam->setPositionX(cam->getPositionX() + p_spd.x);
-	}
-	else if (player->getPosition().x < visibleSize.width / 2) {
-		cam->setPositionX(0);
-	}
-	else{
-		cam->setPositionX((600 * SCALE) - visibleSize.width - 100);
-	}
-
-	for (int i = 0; i < 2; i++) {	 //Search Prompt
-		for (int q = 0; q < 1; q++) {
-			for (int w = 0; w < rooms[i][q]->totalContainers.size(); w++) {
-				float dist = rooms[i][q]->totalContainers[w]->getPosX() - player->getPositionX();
-				if (dist >= 0 && dist <= 20) {
-					bool soundbuff = false;
-					//Show prompt
-
-					if (GAMEPLAY_INPUT.key_Interact && rooms[i][q]->totalContainers[w]->getLooted() == false) {	   //Looting
-						soundbuff = true;
-						lootingTime -= dt;
-
-						if (!(rooms[i][q]->totalContainers[w]->getBeingLooted())) {
-							audio->playEffect("SearchSound.wav", false, 1.0f, 1.0f, 0.008f);
-							
-							if (lootingTime <= 0) {
-								rooms[i][q]->totalContainers[w]->looting(player);
-								rooms[i][q]->totalContainers[w]->isBeingLooted(true);
+		if (timer >= 0) {
+			timer -= dt;
+		}
+		else if (timer <= 0) {
+			if (GAMEPLAY_INPUT.key_space) {
+				timer = _TIME;
+				for (unsigned int z = 0; z < zombie.size(); z++) {
+					if (player->getDir()) {
+						if ((player->getPosition().x - zombie[z]->getPosition().x) <= 50) {
+							if ((player->getPosition().x - zombie[z]->getPosition().x) >= 0) {
+								zombie[z]->setSpd(Vec2(-1.0f, 0));
+								if (!zombie[z]->getDir()) {
+									zombie[z]->hurt(5);
+								}
+								else {
+									zombie[z]->hurt(1);
+								}
+								zombie[z]->move();
 							}
-							
-						}
-						else {
-							rooms[i][q]->totalContainers[w]->isBeingLooted(false);
-							lootingTime = 3.0f;
-							//audio->stopEffect(audio->playEffect("Rummaging.wav", false, 1.0f, 1.0f, 0.01f));
 						}
 					}
-				}
-				else
-				{
-					//hide Prompt
+					else if (!player->getDir()) {
+						if ((player->getPosition().x - zombie[z]->getPosition().x) >= -50) {
+							if ((player->getPosition().x - zombie[z]->getPosition().x) <= 0) {
+								zombie[z]->setSpd(Vec2(1.0f, 0));
+								if (zombie[z]->getDir()) {
+									zombie[z]->hurt(5);
+								}
+								else {
+									zombie[z]->hurt(1);
+								}
+								zombie[z]->move();
+								timer = _TIME;
+								if (zombie[z]->getHp() <= 0) {
+									removeChild(zombie[z]);
+									zombie[z]->release();
+									auto it = zombie.begin();
+									zombie.erase(it + z);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 	}
 
-	for (int i = 0; i < 2; i++) {	 //Stairs Prompt
-		for (int q = 0; q < 1; q++) {
-			if ((rooms[i][q]->isStairs())) {
-				float dist = rooms[i][q]->getPositionX() - player->getPositionX();
-				if (dist >= 0 && dist <= 20) {
-					if (GAMEPLAY_INPUT.key_up && (player->getPositionY() < 250.0f) && player->getPositionY() < 400) {
+		if (player->getPosition().x + p_spd.x - player->getBoundingBox().size.width / 2 < 70 * SCALE) {
+			p_spd.x = player->getPosition().x - player->getBoundingBox().size.width / 2 - (70 * SCALE);
+		}
+		else if (player->getPosition().x + p_spd.x + player->getBoundingBox().size.width / 2 > 600 * SCALE - 265) {
+			p_spd.x = player->getPosition().x + player->getBoundingBox().size.width / 2 - (600 * SCALE - 265);
+		}
 
-						player->move(cocos2d::Vec2(0, 200));
+		if (player->getPosition().x >= 158 * SCALE && player->getPosition().x + p_spd.x < 158 * SCALE) {
+			p_spd.y = -5 * SCALE;
+		}
+		else if (player->getPosition().x + p_spd.x > 158 * SCALE && player->getPosition().x <= 158 * SCALE) {
+			p_spd.y = 5 * SCALE;
+		}
+
+		auto visibleSize = Director::getInstance()->getVisibleSize();
+
+		auto cam = getDefaultCamera();
+		if (player->getPosition().x > visibleSize.width / 2 && player->getPosition().x < (600 * SCALE) - (visibleSize.width / 2) - 100) {
+			cam->setPositionX(cam->getPositionX() + p_spd.x);
+		}
+		else if (player->getPosition().x < visibleSize.width / 2) {
+			cam->setPositionX(0);
+		}
+		else {
+			cam->setPositionX((600 * SCALE) - visibleSize.width - 100);
+		}
+
+		for (int i = 0; i < 2; i++) {	 //Search Prompt
+			for (int q = 0; q < 1; q++) {
+				for (int w = 0; w < rooms[i][q]->totalContainers.size(); w++) {
+					float dist = rooms[i][q]->totalContainers[w]->getPosX() - player->getPositionX();
+					if (dist >= 0 && dist <= 20) {
+						bool soundbuff = false;
+						//Show prompt
+
+						if (GAMEPLAY_INPUT.key_Interact && rooms[i][q]->totalContainers[w]->getLooted() == false) {	   //Looting
+							soundbuff = true;
+							lootingTime -= dt;
+
+							if (!(rooms[i][q]->totalContainers[w]->getBeingLooted())) {
+								audio->playEffect("SearchSound.wav", false, 1.0f, 1.0f, 0.008f);
+
+								if (lootingTime <= 0) {
+									rooms[i][q]->totalContainers[w]->looting(player);
+									rooms[i][q]->totalContainers[w]->isBeingLooted(true);
+								}
+
+							}
+							else {
+								rooms[i][q]->totalContainers[w]->isBeingLooted(false);
+								lootingTime = 3.0f;
+								//audio->stopEffect(audio->playEffect("Rummaging.wav", false, 1.0f, 1.0f, 0.01f));
+							}
+						}
 					}
-					
-					if (GAMEPLAY_INPUT.key_up && (player->getPositionY() > 250.0f) && player->getPositionY() > 0) {
-
-						player->move(cocos2d::Vec2(0, -200));
+					else
+					{
+						//hide Prompt
 					}
-						
-
 				}
 			}
 		}
-	}
-	//if (GAMEPLAY_INPUT.key_Interact && (LivingRoom1->totalContainers[0]->getPosX() - player->getPositionX() >= 0 && LivingRoom1->totalContainers[0]->getPosX() - player->getPositionX() >= 10) && LivingRoom1->totalContainers[0]->getLooted() == false) {
-	//	if(!(LivingRoom1->totalContainers[0]->getBeingLooted())){ audio->playEffect("Rummaging.wav", false, 1.0f, 1.0f, 1.0f); }
-	//	LivingRoom1->totalContainers[0]->isBeingLooted(true);
-	//	LivingRoom1->totalContainers[0]->looting(player, dt);
-	//	
-	//}
-	//else {
-	//	LivingRoom1->totalContainers[0]->isBeingLooted(false);
-	//}
+
+		for (int i = 0; i < 2; i++) {	 //Stairs Prompt
+			for (int q = 0; q < 1; q++) {
+				if ((rooms[i][q]->isStairs())) {
+					float dist = rooms[i][q]->getPositionX() - player->getPositionX();
+					if (dist >= 0 && dist <= 20) {
+						if (GAMEPLAY_INPUT.key_up && (player->getPositionY() < 250.0f) && player->getPositionY() < 400) {
+
+							player->move(cocos2d::Vec2(0, 200));
+						}
+
+						if (GAMEPLAY_INPUT.key_up && (player->getPositionY() > 250.0f) && player->getPositionY() > 0) {
+
+							player->move(cocos2d::Vec2(0, -200));
+						}
 
 
-	player->move(p_spd);
+					}
+				}
+			}
+		}
+		//if (GAMEPLAY_INPUT.key_Interact && (LivingRoom1->totalContainers[0]->getPosX() - player->getPositionX() >= 0 && LivingRoom1->totalContainers[0]->getPosX() - player->getPositionX() >= 10) && LivingRoom1->totalContainers[0]->getLooted() == false) {
+		//	if(!(LivingRoom1->totalContainers[0]->getBeingLooted())){ audio->playEffect("Rummaging.wav", false, 1.0f, 1.0f, 1.0f); }
+		//	LivingRoom1->totalContainers[0]->isBeingLooted(true);
+		//	LivingRoom1->totalContainers[0]->looting(player, dt);
+		//	
+		//}
+		//else {
+		//	LivingRoom1->totalContainers[0]->isBeingLooted(false);
+		//}
 
-	zombie[0]->AI(player, dt);
 
-	//input AI in loop
-	zombie[0]->move();
+		player->move(p_spd);
+
+		for (unsigned int z = 0; z < zombie.size(); z++) {
+			zombie[z]->AI(player, dt);
+			zombie[z]->move();
+		}
+}
+
+void GameScene::gameResourceCallback(Ref* pSender) {
+	Director::getInstance()->replaceScene(ResourceScene::createScene(player));
+}
+
+void GameScene::clearBtns() {
+	GAMEPLAY_INPUT.key_up = false;
+	GAMEPLAY_INPUT.key_right = false;
+	GAMEPLAY_INPUT.key_down = false;
+	GAMEPLAY_INPUT.key_left = false;
+	GAMEPLAY_INPUT.key_space = false;
+	GAMEPLAY_INPUT.key_space_p = false;
+	GAMEPLAY_INPUT.key_escape = false;
 }

@@ -15,6 +15,7 @@ private:
 	int food = 0;
 	int	water = 0;
 	int	gas = 0;
+	int hp = 10;
 public:
 	static const int PLAYER_SPEED = 60;
 
@@ -36,5 +37,8 @@ public:
 	void addfood(int);
 	void addWater(int);
 	void addGas(int);
+	void hurt(int dmg);
+	int getHp();
+	void setHp(int _hp);
 };
 

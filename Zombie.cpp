@@ -23,7 +23,7 @@ void Zombie::AI(Player* player, float dt) {
 			}
 		}
 		else if (!getDir()) {
-			if ((player->getPosition().x - this->getPosition().x) <= 30) {
+			if ((player->getPosition().x - this->getPosition().x) <= 40) {
 				z_spd.x = Zombie::ZOMBIE_SPEED * dt;
 				setScale(SCALE);
 				atk = true;
@@ -38,7 +38,7 @@ void Zombie::AI(Player* player, float dt) {
 			}
 		}
 		else if (getDir()) {
-			if ((this->getPosition().x - player->getPosition().x) <= 30) {
+			if ((this->getPosition().x - player->getPosition().x) <= 40) {
 				z_spd.x = -Zombie::ZOMBIE_SPEED * dt;
 				setScale(-SCALE, SCALE);
 				atk = true;
@@ -90,6 +90,14 @@ cocos2d::Vec2 Zombie::getSpd() {
 
 void Zombie::hurt(int dmg) {
 	hp -= dmg;
+}
+
+int Zombie::getHp() {
+	return hp;
+}
+
+void Zombie::hit(int dmg) {
+
 }
 
 void Zombie::move()

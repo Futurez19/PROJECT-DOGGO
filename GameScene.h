@@ -17,12 +17,12 @@ class GameScene : public cocos2d::Scene {
 private:
 	Player * player;
 	std::vector<Zombie *> zombie;
+	int hp = 10;
 	const float _TIME = 1;
-	float timer = _TIME;
 
 	float lootingTime = 3.0f;
 
-	const float SCALE = 3.0;
+	const float SCALE = 4.0;
 
 	Room* rooms[3][2];
 
@@ -33,11 +33,16 @@ private:
 	cocos2d::Vec2 position5 = cocos2d::Vec2(510, 485);
 	cocos2d::Vec2 position6 = cocos2d::Vec2(810, 485);
 	
+	const float i_TIME = 0.5;
+	float timer = 0; //_TIME
+	float invuln = 0; //i_TIME
 public:
 	static Scene* GameScene::createScene();
 	cocos2d::Vec2 generateLocation(int,int);
 	virtual bool init();
 	void RNG(int,int);
+	void gameResourceCallback(cocos2d::Ref* pSender);
+	void GameScene::clearBtns();
 
 	void update(float dt) override;
 
