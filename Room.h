@@ -6,6 +6,7 @@
 class Room : public cocos2d::Sprite {
 public:
 	std::vector<Container*> totalContainers;
+	
 
 	int variation;
 

@@ -35,9 +35,14 @@ void Kitchen::generateVariation(int v)
 {
 	switch(v){
 	case 1:
-		Container* temp_container1 = new Container(this->getPosition());
-		totalContainers.push_back(temp_container1);
-
+		totalContainers.push_back(new Container(this->getPosition() - cocos2d::Vec2(80, 0)));
+		break;
+	case 2:
+		totalContainers.push_back(new Container(this->getPosition() - cocos2d::Vec2(80, 0)));
+		totalContainers.push_back(new Container(this->getPosition() + cocos2d::Vec2(40, 0)));
+		break;
+	case 3:
+		totalContainers.push_back(new Container(this->getPosition() - cocos2d::Vec2(20, 0)));
 		break;
 
 	}

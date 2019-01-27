@@ -10,11 +10,11 @@ private:
 	int contains;
 	cocos2d::Vec2 position;
 
-	bool Locked = false;
 	bool Looted = false;
 	bool beingLooted = false;
 
 	float lootingTime = 3.0f;
+	cocos2d::Sprite * prompt = cocos2d::Sprite::create("E-Prompt.png");
 
 public:
 	Container(cocos2d::Vec2 p);	   //Container Type = Auto Generated, # of contained objects = Auto generated, Vec2 Position = Required.
@@ -22,7 +22,7 @@ public:
 
 	ContainerType generateEnum();
 	int generateNum();
-	bool generateLocked();
+	
 
 	
 
@@ -36,4 +36,6 @@ public:
 	bool getLooted();
 	
 	float getLootingTime();
+
+	cocos2d::Sprite* getPrompt() { return prompt; }
 };

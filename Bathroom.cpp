@@ -7,7 +7,15 @@ Bathroom * Bathroom::create(int variation)
 	switch (variation) {
 	case 1: //This is where we add the Sprite image and the locations of the containers
 
-		spriteFile = "pixel_Bathroom.png";
+		spriteFile = "Bathroom1.png";
+		break;
+	case 2: 
+
+		spriteFile = "Bathroom2.png";
+		break;
+	case 3: 
+
+		spriteFile = "Bathroom3.png";
 		break;
 	}
 
@@ -27,8 +35,16 @@ bool Bathroom::isStairs()
 
 void Bathroom::generateVariation(int v)
 {
-	if (v == 1) {
-		Container* temp_container1 = new Container(this->getPosition());
-		totalContainers.push_back(temp_container1);
+	switch (v) {
+	case 1:
+		totalContainers.push_back(new Container(this->getPosition() + cocos2d::Vec2(115, 0)));
+		break;
+	case 2:
+		totalContainers.push_back(new Container(this->getPosition() + cocos2d::Vec2(120, 0)));
+		break;
+	case 3:
+		totalContainers.push_back(new Container(this->getPosition() + cocos2d::Vec2(115, 0)));
+		break;
+
 	}
 }

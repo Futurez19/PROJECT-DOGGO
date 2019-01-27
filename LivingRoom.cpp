@@ -10,6 +10,14 @@
 			
 			spriteFile = "LivingRoomAsset.jpg";
 			break;
+		case 2:
+
+			spriteFile = "LivingRoomAsset2.jpg";
+			break;
+		case 3:
+
+			spriteFile = "LivingRoomAsset3.jpg";
+			break;
 		}
 
 		auto live = new (std::nothrow) LivingRoom;
@@ -30,10 +38,17 @@
 
 	void LivingRoom::generateVariation(int v)
 	{
-		if (v == 1) {
-			Container* temp_container1 = new Container(this->getPosition());
-			totalContainers.push_back(temp_container1);
+		switch(v){
+		case 1:
+			totalContainers.push_back(new Container(this->getPosition()));
+			break;
+		case 2:
 			
+			break;
+		case 3:
+			totalContainers.push_back(new Container(this->getPosition() - cocos2d::Vec2(20, 0)));
+			break;
+
 		}
 	}
 

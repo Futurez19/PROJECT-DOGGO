@@ -3,6 +3,7 @@
 #include "Container.h"
 #include "Container.h"
 #include <ctime>
+#include <random>
 
 
 
@@ -10,8 +11,11 @@ ContainerType Container::generateEnum()
 {
 	ContainerType temp_type;
 
-	srand(time(NULL)); // seeding random
-	int type = (rand() % 99) + 1; // 0-2 + 1	 aka 1-3
+	std::random_device gen;
+	std::uniform_int_distribution<> range(1, 100);
+
+	
+	int type = (range(gen)); // 0-2 + 1	 aka 1-3
 
 	if (type <= 40) {
 		temp_type = NA;
@@ -34,23 +38,14 @@ ContainerType Container::generateEnum()
 
 int Container::generateNum()
 {
-	srand(time(NULL));
-	int temp_num = (rand() % 3) + 1;
+	std::random_device gen;
+	std::uniform_int_distribution<> range(1, 4);
+	
+	int temp_num = (range(gen));
 	return temp_num;
 }
 
-bool Container::generateLocked()
-{
-	srand(time(NULL));
-	int locked = (rand() % 99) + 1;
 
-	if (locked <= 10) {
-		return true;
-	}
-	else
-		return false;
-	
-}
 
 bool Container::getLooted()
 {

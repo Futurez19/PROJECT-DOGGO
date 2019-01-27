@@ -9,6 +9,14 @@ Bedroom * Bedroom::create(int variation)
 
 		spriteFile = "BedroomAsset.jpg";
 		break;
+	case 2: 
+
+		spriteFile = "BedroomAsset2.jpg";
+		break;
+	case 3:
+
+		spriteFile = "BedroomAsset3.jpg";
+		break;
 	}
 
 	auto bed = new (std::nothrow) Bedroom;
@@ -27,8 +35,17 @@ bool Bedroom::isStairs()
 
 void Bedroom::generateVariation(int v)
 {
-	if (v == 1) {
-		Container* temp_container1 = new Container(this->getPosition());
-		totalContainers.push_back(temp_container1);
+	switch (v) {
+	case 1:
+		totalContainers.push_back(new Container(this->getPosition() - cocos2d::Vec2(55, 0)));
+		break;
+	case 2:
+		totalContainers.push_back(new Container(this->getPosition() - cocos2d::Vec2(60, 0)));
+		totalContainers.push_back(new Container(this->getPosition() + cocos2d::Vec2(70, 0)));
+		break;
+	case 3:
+		totalContainers.push_back(new Container(this->getPosition() - cocos2d::Vec2(150, 0)));
+		break;
+
 	}
 }
