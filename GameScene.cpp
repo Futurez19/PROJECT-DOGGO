@@ -32,10 +32,6 @@ bool GameScene::init()
 	zombie[0]->setPosition(Vec2(300, 100));
 	zombie[0]->setScale(2.0f);
 
-	zombie.push_back(Zombie::create(300, 1));
-	zombie[1]->setPosition(Vec2(300, 100));
-	zombie[1]->setScale(2.0f);
-
 	auto BG = Sprite::create();
 	BG->initWithFile("ground.png");
 	BG->setPosition(Vec2(550, -30));
@@ -98,7 +94,6 @@ bool GameScene::init()
 	addChild(player);
 	addChild(BG);
 	addChild(zombie[0]);
-	addChild(zombie[1]);
 
 	this->scheduleUpdate();
 
@@ -110,16 +105,18 @@ void GameScene::update(float dt)
 	Vec2 p_spd = { 0, 0 };
 
 	if (timer <= 0) {
-		if (GAMEPLAY_INPUT.key_right) {
-			p_spd.x += Player::PLAYER_SPEED * dt;
-			player->setScale(-2, 2);
-			player->setDir(false);
-		}
+		if (invuln <= 0) {
+			if (GAMEPLAY_INPUT.key_right) {
+				p_spd.x += Player::PLAYER_SPEED * dt;
+				player->setScale(-2, 2);
+				player->setDir(false);
+			}
 
-		if (GAMEPLAY_INPUT.key_left) {
-			p_spd.x -= Player::PLAYER_SPEED * dt;
-			player->setScale(2);
-			player->setDir(true);
+			if (GAMEPLAY_INPUT.key_left) {
+				p_spd.x -= Player::PLAYER_SPEED * dt;
+				player->setScale(2);
+				player->setDir(true);
+			}
 		}
 	}
 
