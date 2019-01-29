@@ -2,13 +2,17 @@
 #include "cocos2d.h"
 #include "GameScene.h"
 #include "MenuScene.h"
+#include "Player.h"
 
 USING_NS_CC;
 
 static void problemLoading(const char* filename);
 
-Scene* ResourceScene::createScene() {
-	return ResourceScene::create();
+Scene* ResourceScene::createScene(Player * p) {
+	auto ret = ResourceScene::create();
+	ret->setHp(p->getHp());
+
+	return ret;
 }
 
 bool ResourceScene::init()
@@ -25,6 +29,7 @@ bool ResourceScene::init()
 	auto BG = Sprite::create();
 	BG->initWithFile("RMenu.png");
 	BG->setPosition(Vec2(500, 300));
+	BG->setScale(1.05);
 
 	auto scavenge = MenuItemImage::create(
 		"scavenge_unclick.png",
@@ -65,9 +70,17 @@ bool ResourceScene::init()
 	// create menu, it's an autorelease object
 	auto menu = Menu::create(exitMenu, scavenge, NULL);
 	menu->setPosition(Vec2::ZERO);
+	menu->setScale(1.05);
+
+	healthBar.push_back(DrawNode::create());
+	healthBar[0]->drawSolidRect(Vec2(711.0f, 25.0f), Vec2(878.0f, 388.0f), Color4F(1.0f, 0.0f, 0.0f, 1.0f));
+	addChild(healthBar[0]);
+
 	this->addChild(menu, 1);
 
 	addChild(BG);
+
+	scheduleUpdate();
 
 	return true;
 }
@@ -84,4 +97,44 @@ void ResourceScene::resourceReturnCallback(Ref* pSender) {
 
 void ResourceScene::resourceMenuCallback(Ref* pSender) {
 	Director::getInstance()->replaceScene(MenuScene::create());
+}
+//(711, 25), (878, 388)
+
+void ResourceScene::update(float dt) {
+	float tHP = 388.0f;
+	int playerHP = getHp();
+	
+	float HP = ((388.0f / 10) * playerHP);
+	float currentPos = tHP - HP;
+	//float lol = tHP - currentPos;
+
+	float test = 10 - playerHP;
+	
+	if (hpBar >= (HP)) {
+		healthBar[0]->setPosition(healthBar[0]->getPosition() + Vec2(0, (-20*test)));
+		//hpBar -= currentPos;
+	}
+
+	auto label = Label::createWithTTF("Gas", "fonts/Marker Felt.ttf", 50);
+	if (label == nullptr)
+	{
+		problemLoading("'fonts/Marker Felt.ttf'");
+	}
+	else
+	{
+		// position the label on the center of the screen
+		label->setPosition(Vec2(460,
+			480));
+
+		// add the label as a child to this layer
+		this->addChild(label, 1);
+	}
+	
+}
+
+int ResourceScene::getHp() {
+	return hp;
+}
+void ResourceScene::setHp(int _hp) {
+	hp = _hp;
 }

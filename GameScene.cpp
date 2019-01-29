@@ -1,5 +1,7 @@
 #include "GameScene.h"
 #include "cocos2d.h"
+#include "Resources.h"
+#include "Highscores.h"
 
 USING_NS_CC;
 
@@ -10,7 +12,9 @@ struct {
 	bool key_left = false;
 	bool key_space = false;
 	bool key_space_p = false;
+	bool key_escape = false;
 } GAMEPLAY_INPUT;
+
 
 Scene* GameScene::createScene() {
 	return GameScene::create();
@@ -72,6 +76,9 @@ bool GameScene::init()
 		case EventKeyboard::KeyCode::KEY_SPACE:
 			GAMEPLAY_INPUT.key_space = true;
 			break;
+		case EventKeyboard::KeyCode::KEY_ESCAPE:
+			GAMEPLAY_INPUT.key_escape = true;
+			break;
 		}
 	};
 
@@ -97,6 +104,9 @@ bool GameScene::init()
 			GAMEPLAY_INPUT.key_space = false;
 			GAMEPLAY_INPUT.key_space_p = false;
 			break;
+		case EventKeyboard::KeyCode::KEY_ESCAPE:
+			GAMEPLAY_INPUT.key_escape = false;
+			break;
 		}
 	};
 
@@ -120,11 +130,29 @@ bool GameScene::init()
 		sprt->getTexture()->setTexParameters(tp);
 	}
 
+	cocos2d::Vector<cocos2d::SpriteFrame*> clock_frames;
+
+	for (int i = 1; i <= 24; i++) {
+		String * file_name = String::createWithFormat("clock/clock_%i.png", i);
+		//file_name.append(i);
+		//file_name.append(".png");
+
+		clock_frames.pushBack(cocos2d::SpriteFrame::create(file_name->getCString(), cocos2d::Rect(0,0, 18,18)) );
+		clock_frames.at(i - 1)->getTexture()->setTexParameters(tp);
+	}
+
+	clock = cocos2d::Sprite::createWithSpriteFrame(clock_frames.at(0));
+	clock->runAction(cocos2d::RepeatForever::create(Animate::create(Animation::createWithSpriteFrames(clock_frames, (60 / 24)))));
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	clock->setPosition(visibleSize.width - (clock->getBoundingBox().size.width / 2 * SCALE), visibleSize.height - (clock->getBoundingBox().size.height / 2 * SCALE));
+	clock->setScale(SCALE);
+
 	addChild(BG);
 	addChild(player);
 	addChild(dog);
 	addChild(zombie[0]);
 	addChild(FG);
+	addChild(clock);
 
 	this->scheduleUpdate();
 
@@ -134,6 +162,18 @@ bool GameScene::init()
 void GameScene::update(float dt)
 {
 	Vec2 p_spd = { 0, 0 };
+	
+		total -= dt;
+		if (total <= 0) {
+			total = t_TIME;
+			GameScene::clearBtns();
+			GameScene::gameResourceCallback(player);
+		}
+	
+
+	if (GAMEPLAY_INPUT.key_escape) {
+		
+	}
 
 	if (timer <= 0) {
 		if (invuln <= 0) {
@@ -186,7 +226,11 @@ void GameScene::update(float dt)
 						player->move(p_spd);
 						invuln = i_TIME;
 					}
+					//HERE
 			}
+				if (player->getHp() <= 0) {
+					GameScene::gameHighscoreCallback(NULL);
+				}
 		}
 	}
 
@@ -267,6 +311,9 @@ void GameScene::update(float dt)
 	auto cam = getDefaultCamera();
 	if (player->getPosition().x > visibleSize.width / 2 && player->getPosition().x < (600 * SCALE) - (visibleSize.width/2) - 100) {
 		cam->setPositionX(cam->getPositionX() + p_spd.x);
+
+		//auto origin = Director::getInstance()->getVisibleOrigin();
+		clock->setPosition(cam->getPositionX() + visibleSize.width - (clock->getBoundingBox().size.width / 2), cam->getPositionY() + visibleSize.height - (clock->getBoundingBox().size.height / 2));
 	}
 	else if (player->getPosition().x < visibleSize.width / 2) {
 		cam->setPositionX(0);
@@ -290,4 +337,22 @@ void GameScene::update(float dt)
 
 		zombie[z]->move();
 	}
+}
+
+void GameScene::gameResourceCallback(Ref* pSender) {
+	Director::getInstance()->replaceScene(ResourceScene::createScene(player));
+}
+
+void GameScene::gameHighscoreCallback(Ref* pSender) {
+	Director::getInstance()->replaceScene(ScoreScene::createScene());
+}
+
+void GameScene::clearBtns() {
+	GAMEPLAY_INPUT.key_up = false;
+	GAMEPLAY_INPUT.key_right = false;
+	GAMEPLAY_INPUT.key_down = false;
+	GAMEPLAY_INPUT.key_left = false;
+	GAMEPLAY_INPUT.key_space = false;
+	GAMEPLAY_INPUT.key_space_p = false;
+	GAMEPLAY_INPUT.key_escape = false;
 }
