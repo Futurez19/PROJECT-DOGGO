@@ -12,6 +12,7 @@ private:
 	int hp = 5;
 	const float SCALE = 4.0;
 	bool atk;
+	int floor;
 public:
 	//Zombie(int x, int floor);
 
@@ -30,4 +31,7 @@ public:
 	int getHp();
 	void hit(int dmg);
 	void move();
+	int getFloor() {
+		return floor;
+	}
 };

@@ -102,9 +102,27 @@ bool GameScene::init()
 
 	this->_eventDispatcher->addEventListenerWithSceneGraphPriority(KeyHandler, player);
 
+	auto dog = cocos2d::Sprite::create();
+	dog->initWithFile("dog_1.png");
+	dog->setScale(-SCALE, SCALE);
+	dog->setPosition(80 * SCALE, 49 * SCALE);
+
+	cocos2d::Vector<cocos2d::SpriteFrame*> dog_frames;
+	dog_frames.pushBack(cocos2d::SpriteFrame::create("dog_1.png", cocos2d::Rect(0, 0, 18, 18)));
+	dog_frames.pushBack(cocos2d::SpriteFrame::create("dog_2.png", cocos2d::Rect(0, 0, 18, 18)));
+	dog_frames.pushBack(cocos2d::SpriteFrame::create("dog_3.png", cocos2d::Rect(0, 0, 18, 18)));
+	dog_frames.pushBack(cocos2d::SpriteFrame::create("dog_2.png", cocos2d::Rect(0, 0, 18, 18)));
+
+	dog->runAction(RepeatForever::create(Animate::create(Animation::createWithSpriteFrames(dog_frames, 0.1f))));
+
+	for each (cocos2d::SpriteFrame* sprt in dog_frames)
+	{
+		sprt->getTexture()->setTexParameters(tp);
+	}
 
 	addChild(BG);
 	addChild(player);
+	addChild(dog);
 	addChild(zombie[0]);
 	addChild(FG);
 
@@ -179,7 +197,7 @@ void GameScene::update(float dt)
 			for (unsigned int z = 0; z < zombie.size(); z++) {
 				if (player->getDir()) {
 					if ((player->getPosition().x - zombie[z]->getPosition().x) <= 75) {
-						if ((player->getPosition().x - zombie[z]->getPosition().x) >= 0) {
+						if ((player->getPosition().x - zombie[z]->getPosition().x) >= 0 && player->getFloor() == zombie[z]->getFloor()) {
 							zombie[z]->setSpd(Vec2(-2.0f, 0));
 							if (!zombie[z]->getDir()) {
 								zombie[z]->hurt(5);
