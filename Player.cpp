@@ -89,6 +89,21 @@ void Player::setDir(bool dir) {
 	face_right = dir;
 }
 
+void Player::addfood(int i)
+{
+	food += i;
+}
+
+void Player::addWater(int i)
+{
+	water += i;
+}
+
+void Player::addGas(int i)
+{
+	gas += i;
+}
+
 void Player::hurt(int dmg) {
 	hp--;
 }
